@@ -5,4 +5,6 @@ This is a GAE application written in golang that provides a web based user inter
 
 https://developers.google.com/admin-sdk/domain-shared-contacts/
 
+Samples.go can be edited to provide test data.
+
 
