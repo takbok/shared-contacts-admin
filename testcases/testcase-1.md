@@ -1,4 +1,4 @@
-1. Open [Cloud Test 1](http://www.cloudtest1.com/ )in your favorite browser
+1. Open [Cloud Test 1](http://www.cloudtest1.com/ ) in your favorite browser
 2. Click on 'Choose File' or 'Browse' button.  
 3. Select CSV file and click 'Import'. See  [Sample CSV Data](https://github.com/takbok/shared-contacts-admin/blob/master/testcases/test-data/sample1.csv) .  
 4. Enter 'Google Account' credentials as below:  
