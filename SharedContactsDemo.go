@@ -24,6 +24,9 @@ import (
 	"sort"
 	"strings"
 	"time"
+	"log"
+	"bufio"
+	"mime/multipart"
 
 	"appengine"
 	"appengine/datastore"
@@ -37,23 +40,24 @@ import (
 	//newurlfetch "google.golang.org/appengine/urlfetch"
 )
 
-const feedUrl = `https://www.google.com/m8/feeds/contacts/hugotest.org/full`
+const feedUrl = `https://www.google.com/m8/feeds/contacts/cloudtest1.com/full`
+var inp_file multipart.File  
 
 var exampleEntry = `<atom:entry xmlns:atom='http://www.w3.org/2005/Atom'
     xmlns:gd='http://schemas.google.com/g/2005'>
   <atom:category scheme='http://schemas.google.com/g/2005#kind'
     term='http://schemas.google.com/contact/2008#contact' />
   <gd:name>
-     <gd:givenName>Testo 1</gd:givenName>
-     <gd:familyName>Testo User 1 family name</gd:familyName>
-     <gd:fullName>Testo User 1</gd:fullName>
+     <gd:givenName>My External Contact 1</gd:givenName>
+     <gd:familyName>My External Contact 1 family name</gd:familyName>
+     <gd:fullName>My External Contact 1</gd:fullName>
   </gd:name>
   <atom:content type='text'>Notes</atom:content>
   <gd:email rel='http://schemas.google.com/g/2005#work'
     primary='true'
-    address='testouser1@gmail.com' displayName='E. Bennet' />
+    address='myexternalcontact1@testmail.com' displayName='E. Bennet' />
   <gd:email rel='http://schemas.google.com/g/2005#home'
-    address='testouser@example.org' />
+    address='myexternalcontact1@testmail.com' />
   <gd:phoneNumber rel='http://schemas.google.com/g/2005#work'
     primary='true'>
     (206)555-1212
@@ -61,7 +65,7 @@ var exampleEntry = `<atom:entry xmlns:atom='http://www.w3.org/2005/Atom'
   <gd:phoneNumber rel='http://schemas.google.com/g/2005#home'>
     (111)111-1111
   </gd:phoneNumber>
-  <gd:im address='testouser@gmail.com'
+  <gd:im address='myexternalcontact1@testmail.com'
     protocol='http://schemas.google.com/g/2005#GOOGLE_TALK'
     primary='true'
     rel='http://schemas.google.com/g/2005#home' />
@@ -175,9 +179,9 @@ type ImportData struct {
 
 var (
 	config = &oauth2.Config{
-		ClientID:     `1078325845115-7lsb0oi0k539jrpqdpahun0v69684ceo.apps.googleusercontent.com`,
-		ClientSecret: `I-0bww6IDmGk6IWLSQsq8v7T`,
-		RedirectURL:  `http://hugotest.org/contacts/export`, //`http://hugotest.org/import/do`,
+		ClientID:     `80201252386-1brqe0b153fc6liqrgic70rjujsu030i.apps.googleusercontent.com`,
+		ClientSecret: `z1eY8F0Wp-HOud0DALh5PlTq`,
+		RedirectURL:  `http://www.cloudtest1.com/import/do`, //`http://www.cloudtest1.com/import/do`,
 		Scopes:       []string{`http://www.google.com/m8/feeds/contacts/`},
 		Endpoint:     google.Endpoint,
 	}
@@ -215,7 +219,10 @@ a.button {
   </head>
   <body>
     <a class="button" href="/contacts">Get Shared Contacts</a><br/><hr/>
-    <a class="button" href="/import">Import</a><br/>
+	<form enctype="multipart/form-data" action="import" method="post">
+      <input type="file" name="inputfile" />
+      <input type="submit" value="Import" />
+	</form>
     <a class="button" href="/export">Export</a><br/>
   </body>
 </html>
@@ -224,7 +231,7 @@ a.button {
 
 func handleContacts(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
-	config.RedirectURL = `http://hugotest.org/contacts/export`
+	config.RedirectURL = `http://www.cloudtest1.com/contacts/export`
 	url := config.AuthCodeURL(yeah)
 	ctx.Infof("Auth: %v", url)
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
@@ -247,29 +254,40 @@ func handleContactsExport(w http.ResponseWriter, r *http.Request) {
 
 	writeCSV(ctx, w, buf.Bytes())
 }
-
 func handleImport(w http.ResponseWriter, r *http.Request) {
-	ctx := appengine.NewContext(r)
-	//u := user.Current(ctx)
 
-	config.RedirectURL = `http://hugotest.org/import/do`
-	url := config.AuthCodeURL(yeah)
+		r.ParseMultipartForm(32 << 20)
+		var err error
+		inp_file, _, err = r.FormFile("inputfile")
+		if err != nil {
+			log.Print("\n returning bcoz of error 1");
+			log.Print(err)
+			return
+		}
+		defer inp_file.Close()
 
-	ctx.Infof("Auth: %v", url)
+        ctx := appengine.NewContext(r)
+        //u := user.Current(ctx)
 
-	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
+        config.RedirectURL = `http://www.cloudtest1.com/import/do`
+		url := config.AuthCodeURL(yeah)
+
+        ctx.Infof("Auth: %v", url)
+        
+        http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 }
 
 func handleImportDo(w http.ResponseWriter, r *http.Request) {
+
 	ctx := appengine.NewContext(r)
 
-	state := r.FormValue("state")
-	if state != yeah {
-		ctx.Errorf("invalid state '%v'", state)
-		return
-	}
+    state := r.FormValue("state")
+    if state != yeah {
+            ctx.Errorf("invalid state '%v'", state)
+	return
+    }
 
-	newctx := newappengine.NewContext(r)
+    newctx := newappengine.NewContext(r)
 
 	tok, err := config.Exchange(newctx /*oauth2.NoContext*/, r.FormValue("code"))
 	if err != nil {
@@ -279,47 +297,47 @@ func handleImportDo(w http.ResponseWriter, r *http.Request) {
 
 	client := config.Client(newctx, tok)
 
-	cr := csv.NewReader(strings.NewReader(sample))
+    cr := csv.NewReader(bufio.NewReader(inp_file))
 	records, err := cr.ReadAll()
 	if err != nil {
+		log.Print("\n CSV file error")
 		ctx.Errorf("%v", err)
 		return
 	}
-
-	buf := new(bytes.Buffer)
-
-	names, rec := records[0], records[8]
-	fmt.Fprintf(buf, `<atom:entry xmlns:atom='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005'>
+	names := records[0]
+	datalen := len(records)
+	log.Print("\n Loop started")
+	for i := 1; i < datalen; i++ {
+		rec := records[i]
+		buf := new(bytes.Buffer)
+		fmt.Fprintf(buf, `<atom:entry xmlns:atom='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005'>
 <atom:category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/contact/2008#contact' />
 <atom:content type='text'>Notes</atom:content>
 `)
-
-	numExtended, M := 0, 10
-	for i, v := range rec {
-		s := names[i]
-		if s == "Name" {
-			fmt.Fprintf(buf, "<gd:name><gd:fullName>%v</gd:fullName></gd:name>\n", v)
-		} else if s == "E-mail Address" {
-			fmt.Fprintf(buf, `<gd:email rel='http://schemas.google.com/g/2005#home' address='%v' />
-`, v)
-		} else if strings.HasPrefix(s, "E-mail ") && strings.HasSuffix(s, " Address") {
-			var num uint
-			fmt.Sscanf(s, "E-mail %v Address", &num)
-			if numExtended < M && ((0 < num && num < 6) || s == "E-mail Address") {
-				fmt.Fprintf(buf, `<gd:extendedProperty name="%v" value="%v" />`+"\n", s, v)
-				numExtended++
-			}
-		} else if numExtended < M {
-			fmt.Fprintf(buf, `<gd:extendedProperty name="%v" value="%v" />`+"\n", s, v)
-			numExtended++
+		numExtended, M := 0, 10
+		for j, s := range names {
+			if s == "Name" {
+				fmt.Fprintf(buf, "<gd:name><gd:fullName>%v</gd:fullName></gd:name>\n", rec[j])
+			} else if s == "E-mail Address" {
+				fmt.Fprintf(buf, "<gd:email rel='http://schemas.google.com/g/2005#home' address='%v'/>", rec[j])
+			} else if strings.HasPrefix(s, "E-mail ") && strings.HasSuffix(s, " Address") {
+                    var num uint
+                    fmt.Sscanf(s, "E-mail %v Address", &num)
+                    if numExtended < M && ((0 < num && num < 6) || s == "E-mail Address") {
+                            fmt.Fprintf(buf, `<gd:extendedProperty name="%v" value="%v" />`+"\n", s, rec[j])
+                            numExtended++
+                    }
+            } else if numExtended < M {
+                    fmt.Fprintf(buf, `<gd:extendedProperty name="%v" value="%v" />`+"\n", s, rec[j])
+                    numExtended++
+            }
 		}
+		fmt.Fprintf(buf, `</atom:entry>`)
+
+		res, _ := client.Post(feedUrl, `application/atom+xml`, strings.NewReader(buf.String()))
+
+		fmt.Fprintf(w, "Result: %v<br/>", res.Status)
 	}
-	fmt.Fprintf(buf, `</atom:entry>`)
-
-	res, _ := client.Post(feedUrl, `application/atom+xml`, strings.NewReader(exampleEntry))
-
-	fmt.Fprintf(w, `Result: %v<br/>`, res.Status)
-	fmt.Fprintf(w, `<textarea>%v</textarea>`, buf.String())
 }
 
 func handleExport(w http.ResponseWriter, r *http.Request) {

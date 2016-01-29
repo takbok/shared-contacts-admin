@@ -1,5 +1,5 @@
-application: hello-hugo
-version: 2
+application: takbok-cloud-test-1-1198
+version: 1
 runtime: go
 api_version: go1
 
