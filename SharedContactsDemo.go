@@ -20,30 +20,26 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io"
+	"mime/multipart"
 	"net/http"
 	"sort"
 	"strings"
 	"time"
-	"log"
-	"bufio"
-	"mime/multipart"
 
 	"appengine"
-	"appengine/datastore"
-	//"appengine/user"
 
-	//"golang.org/x/net/context"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 
 	newappengine "google.golang.org/appengine"
-	//newurlfetch "google.golang.org/appengine/urlfetch"
 )
 
 const feedUrl = `https://www.google.com/m8/feeds/contacts/cloudtest1.com/full`
-var inp_file multipart.File  
 
-var exampleEntry = `<atom:entry xmlns:atom='http://www.w3.org/2005/Atom'
+var inp_file multipart.File
+
+var exampleEntry = `
+  <atom:entry xmlns:atom='http://www.w3.org/2005/Atom'
     xmlns:gd='http://schemas.google.com/g/2005'>
   <atom:category scheme='http://schemas.google.com/g/2005#kind'
     term='http://schemas.google.com/contact/2008#contact' />
@@ -181,178 +177,13 @@ var (
 	config = &oauth2.Config{
 		ClientID:     `80201252386-1brqe0b153fc6liqrgic70rjujsu030i.apps.googleusercontent.com`,
 		ClientSecret: `z1eY8F0Wp-HOud0DALh5PlTq`,
-		RedirectURL:  `http://www.cloudtest1.com/import/do`, //`http://www.cloudtest1.com/import/do`,
+		RedirectURL:  `http://www.cloudtest1.com/import/do`,
 		Scopes:       []string{`http://www.google.com/m8/feeds/contacts/`},
 		Endpoint:     google.Endpoint,
 	}
 
 	yeah = "yeah"
 )
-
-/* init - this is somewhat the start point */
-func init() {
-	http.HandleFunc("/import", handleImport)
-	http.HandleFunc("/import/do", handleImportDo)
-	//http.HandleFunc("/export", handleExport)
-	http.HandleFunc("/export", handleContacts)
-	http.HandleFunc("/contacts", handleContacts)
-	http.HandleFunc("/contacts/export", handleContactsExport)
-	http.HandleFunc("/", handleHome)
-}
-
-func handleHome(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, `<!DOCTYPE html>
-<html>
-  <head>
-    <title>Shared Contacts</title>
-    <style type="text/css">
-a.button {
-    -webkit-appearance: button;
-    -moz-appearance: button;
-    appearance: button;
-    text-decoration: none;
-    color: initial;
-    padding: 8px;
-    margin: 8px;
-}
-    </style>
-  </head>
-  <body>
-    <a class="button" href="/contacts">Get Shared Contacts</a><br/><hr/>
-	<form enctype="multipart/form-data" action="import" method="post">
-      <input type="file" name="inputfile" />
-      <input type="submit" value="Import" />
-	</form>
-    <a class="button" href="/export">Export</a><br/>
-  </body>
-</html>
-`)
-}
-
-func handleContacts(w http.ResponseWriter, r *http.Request) {
-	ctx := appengine.NewContext(r)
-	config.RedirectURL = `http://www.cloudtest1.com/contacts/export`
-	url := config.AuthCodeURL(yeah)
-	ctx.Infof("Auth: %v", url)
-	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
-}
-
-func handleContactsExport(w http.ResponseWriter, r *http.Request) {
-	ctx := appengine.NewContext(r)
-
-	state := r.FormValue("state")
-	if state != yeah {
-		ctx.Errorf("invalid state '%v'", state)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/csv" /*"text/csv"*/)
-
-	buf := loadFullFeed(ctx, r)
-
-	ctx.Infof("%v", buf.String())
-
-	writeCSV(ctx, w, buf.Bytes())
-}
-func handleImport(w http.ResponseWriter, r *http.Request) {
-
-		r.ParseMultipartForm(32 << 20)
-		var err error
-		inp_file, _, err = r.FormFile("inputfile")
-		if err != nil {
-			log.Print("\n returning bcoz of error 1");
-			log.Print(err)
-			return
-		}
-		defer inp_file.Close()
-
-        ctx := appengine.NewContext(r)
-        //u := user.Current(ctx)
-
-        config.RedirectURL = `http://www.cloudtest1.com/import/do`
-		url := config.AuthCodeURL(yeah)
-
-        ctx.Infof("Auth: %v", url)
-        
-        http.Redirect(w, r, url, http.StatusTemporaryRedirect)
-}
-
-func handleImportDo(w http.ResponseWriter, r *http.Request) {
-
-	ctx := appengine.NewContext(r)
-
-    state := r.FormValue("state")
-    if state != yeah {
-            ctx.Errorf("invalid state '%v'", state)
-	return
-    }
-
-    newctx := newappengine.NewContext(r)
-
-	tok, err := config.Exchange(newctx /*oauth2.NoContext*/, r.FormValue("code"))
-	if err != nil {
-		ctx.Errorf("exchange error: %v", err)
-		return
-	}
-
-	client := config.Client(newctx, tok)
-
-    cr := csv.NewReader(bufio.NewReader(inp_file))
-	records, err := cr.ReadAll()
-	if err != nil {
-		log.Print("\n CSV file error")
-		ctx.Errorf("%v", err)
-		return
-	}
-	names := records[0]
-	datalen := len(records)
-	log.Print("\n Loop started")
-	for i := 1; i < datalen; i++ {
-		rec := records[i]
-		buf := new(bytes.Buffer)
-		fmt.Fprintf(buf, `<atom:entry xmlns:atom='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005'>
-<atom:category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/contact/2008#contact' />
-<atom:content type='text'>Notes</atom:content>
-`)
-		numExtended, M := 0, 10
-		for j, s := range names {
-			if s == "Name" {
-				fmt.Fprintf(buf, "<gd:name><gd:fullName>%v</gd:fullName></gd:name>\n", rec[j])
-			} else if s == "E-mail Address" {
-				fmt.Fprintf(buf, "<gd:email rel='http://schemas.google.com/g/2005#home' address='%v'/>", rec[j])
-			} else if strings.HasPrefix(s, "E-mail ") && strings.HasSuffix(s, " Address") {
-                    var num uint
-                    fmt.Sscanf(s, "E-mail %v Address", &num)
-                    if numExtended < M && ((0 < num && num < 6) || s == "E-mail Address") {
-                            fmt.Fprintf(buf, `<gd:extendedProperty name="%v" value="%v" />`+"\n", s, rec[j])
-                            numExtended++
-                    }
-            } else if numExtended < M {
-                    fmt.Fprintf(buf, `<gd:extendedProperty name="%v" value="%v" />`+"\n", s, rec[j])
-                    numExtended++
-            }
-		}
-		fmt.Fprintf(buf, `</atom:entry>`)
-
-		res, _ := client.Post(feedUrl, `application/atom+xml`, strings.NewReader(buf.String()))
-
-		fmt.Fprintf(w, "Result: %v<br/>", res.Status)
-	}
-}
-
-func handleExport(w http.ResponseWriter, r *http.Request) {
-	ctx := appengine.NewContext(r)
-
-	w.Header().Set("Content-Type", "application/csv" /*"text/csv"*/)
-
-	d := &ImportData{}
-	k := datastore.NewKey(ctx, "ImportData", "ImportedFeed", 0, nil)
-	if err := datastore.Get(ctx, k, d); err != nil {
-		ctx.Errorf("get: %v", err)
-	} else {
-		writeCSV(ctx, w, d.Data)
-	}
-}
 
 func writeCSV(ctx appengine.Context, w http.ResponseWriter, data []byte) {
 	var feed Feed
