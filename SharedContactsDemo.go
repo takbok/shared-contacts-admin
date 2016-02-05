@@ -28,9 +28,6 @@ import (
 
 	"appengine"
 
-	"golang.org/x/oauth2"
-	"golang.org/x/oauth2/google"
-
 	newappengine "google.golang.org/appengine"
 )
 
@@ -172,18 +169,6 @@ type GDExtendedProperty struct {
 type ImportData struct {
 	Data []byte
 }
-
-var (
-	config = &oauth2.Config{
-		ClientID:     `80201252386-1brqe0b153fc6liqrgic70rjujsu030i.apps.googleusercontent.com`,
-		ClientSecret: `z1eY8F0Wp-HOud0DALh5PlTq`,
-		RedirectURL:  `http://www.cloudtest1.com/import/do`,
-		Scopes:       []string{`http://www.google.com/m8/feeds/contacts/`},
-		Endpoint:     google.Endpoint,
-	}
-
-	yeah = "yeah"
-)
 
 func writeCSV(ctx appengine.Context, w http.ResponseWriter, data []byte) {
 	var feed Feed
