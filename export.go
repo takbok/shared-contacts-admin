@@ -74,7 +74,7 @@ func handleContactsExport(w http.ResponseWriter, r *http.Request) {
 	state.decodeState(y)
 
 	w.Header().Set(`Content-Type`, `application/csv`)
-	w.Header().Set(`Content-Disposition`, `attachment; filename="export.csv"`)
+	w.Header().Set(`Content-Disposition`, `attachment; filename="`+state.Domain+`-contacts-export.csv"`)
 
 	ctx := appengine.NewContext(r)
 	buf := loadFullFeed(state.Domain, ctx, r)
