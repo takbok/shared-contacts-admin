@@ -34,7 +34,7 @@ import (
 	newappengine "google.golang.org/appengine"
 )
 
-const feedUrl = `https://www.google.com/m8/feeds/contacts/cloudtest1.com/full`
+const feedUrl = `https://www.google.com/m8/feeds/contacts/cloudtest1.com/full?v=3.0`
 
 var inp_file multipart.File
 
@@ -177,7 +177,7 @@ var (
 	config = &oauth2.Config{
 		ClientID:     `80201252386-1brqe0b153fc6liqrgic70rjujsu030i.apps.googleusercontent.com`,
 		ClientSecret: `z1eY8F0Wp-HOud0DALh5PlTq`,
-		RedirectURL:  `http://www.cloudtest1.com/import/do`,
+		RedirectURL:  `http://localhost:8080/import/do`,
 		Scopes:       []string{`http://www.google.com/m8/feeds/contacts/`},
 		Endpoint:     google.Endpoint,
 	}

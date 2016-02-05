@@ -32,7 +32,7 @@ func handleImport(w http.ResponseWriter, r *http.Request) {
 	}
 	defer inp_file.Close()
 
-	config.RedirectURL = `http://www.cloudtest1.com/import/do`
+        config.RedirectURL = `http://www.cloudtest1.com/import/do`
 	url := config.AuthCodeURL(yeah)
 
 	ctx := appengine.NewContext(r)

@@ -1,7 +1,7 @@
 package demo
 
 import (
-	"fmt"
+	//"fmt"
 	"net/http"
 
 	"appengine"
@@ -17,7 +17,7 @@ func init() {
 
 func handleContacts(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
-	config.RedirectURL = fmt.Sprintf(`http://www.cloudtest1.com/contacts/export`, r.Host)
+        config.RedirectURL = `http://www.cloudtest1.com/contacts/export`
 	url := config.AuthCodeURL(yeah)
 	ctx.Infof("Auth: %v", url)
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
