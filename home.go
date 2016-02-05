@@ -22,7 +22,12 @@ a.button {
     </style>
   </head>
   <body>
-    <a class="button" href="/contacts">Get Shared Contacts</a>
+	%s
+	<form action="/contacts" method="post">
+	  <span> Domain hosted with Google Apps for Business </span>
+	  <label for="app_url"></label> <input id="app_url" type="url" name="url" placeholder="http://www.example.com" />
+	  <input type="submit" value="Set Domain" />
+	</form>
 	<br/><hr/>
 	<form enctype="multipart/form-data" action="/import" method="post">
       <input type="file" name="inputfile" />
@@ -39,5 +44,13 @@ func init() {
 }
 
 func handleHomePage(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, html)
+	err := r.FormValue("error")
+	message := ""
+
+	switch err {
+	case "notOnGoogleApps":
+		message = `<h4> This URL is not hosted on Google Apps </h4>`
+	}
+
+	fmt.Fprintf(w, html, message)
 }

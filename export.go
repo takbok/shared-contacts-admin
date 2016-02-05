@@ -2,7 +2,13 @@ package demo
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
+	"net/url"
+	"strings"
+
+	newappengine "google.golang.org/appengine"
+	"google.golang.org/appengine/urlfetch"
 
 	"appengine"
 	"appengine/datastore"
@@ -15,7 +21,39 @@ func init() {
 	http.HandleFunc("/contacts/export", handleContactsExport)
 }
 
+func isUrlOnGoogleApp(writer http.ResponseWriter, request *http.Request) bool {
+	u, err := url.Parse(request.FormValue("url"))
+	if err != nil {
+		return false
+	}
+
+	p := strings.Split(u.Host, ".")
+	p = p[len(p)-2 : len(p)]
+
+	ctx := newappengine.NewContext(request)
+	client := urlfetch.Client(ctx)
+
+	uri := fmt.Sprintf("https://www.google.com/a/%s/ServiceLogin", strings.Join(p, "."))
+	resp, err := client.Get(uri)
+
+	if err != nil {
+		http.Error(writer, err.Error(), http.StatusInternalServerError)
+		return false
+	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+	responseBody := string(body[:])
+
+	// Check if the Google Apps login URL is valid
+	return strings.Contains(responseBody, "https://www.google.com/accounts/AccountChooser")
+}
+
 func handleContacts(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "POST" && !isUrlOnGoogleApp(w, r) {
+		http.Redirect(w, r, "/?error=notOnGoogleApps", http.StatusTemporaryRedirect)
+		return
+	}
+
 	ctx := appengine.NewContext(r)
 	config.RedirectURL = fmt.Sprintf(`http://www.cloudtest1.com/contacts/export`, r.Host)
 	url := config.AuthCodeURL(yeah)
