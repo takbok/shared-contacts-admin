@@ -21,19 +21,11 @@ func init() {
 	http.HandleFunc("/contacts/export", handleContactsExport)
 }
 
-func isUrlOnGoogleApp(writer http.ResponseWriter, request *http.Request) bool {
-	u, err := url.Parse(request.FormValue("url"))
-	if err != nil {
-		return false
-	}
-
-	p := strings.Split(u.Host, ".")
-	p = p[len(p)-2 : len(p)]
-
+func isUrlOnGoogleApp(writer http.ResponseWriter, request *http.Request, url string) bool {
 	ctx := newappengine.NewContext(request)
 	client := urlfetch.Client(ctx)
 
-	uri := fmt.Sprintf("https://www.google.com/a/%s/ServiceLogin", strings.Join(p, "."))
+	uri := fmt.Sprintf("https://www.google.com/a/%s/ServiceLogin", url)
 	resp, err := client.Get(uri)
 
 	if err != nil {
@@ -49,13 +41,22 @@ func isUrlOnGoogleApp(writer http.ResponseWriter, request *http.Request) bool {
 }
 
 func handleContacts(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "POST" && !isUrlOnGoogleApp(w, r) {
-		http.Redirect(w, r, "/?error=notOnGoogleApps", http.StatusTemporaryRedirect)
-		return
+	if r.Method == "POST" {
+		url, err := getProperDomainNameFromUrl(r.FormValue("url"))
+
+		if err != nil {
+			http.Redirect(w, r, "/?error=badUrl", http.StatusTemporaryRedirect)
+			return
+		}
+
+		if !isUrlOnGoogleApp(w, r, url) {
+			http.Redirect(w, r, "/?error=notOnGoogleApps", http.StatusTemporaryRedirect)
+			return
+		}
 	}
 
 	ctx := appengine.NewContext(r)
-	config.RedirectURL = fmt.Sprintf(`http://www.cloudtest1.com/contacts/export`, r.Host)
+	config.RedirectURL = `http://www.cloudtest1.com/contacts/export`
 	url := config.AuthCodeURL(yeah)
 	ctx.Infof("Auth: %v", url)
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
@@ -92,4 +93,21 @@ func handleExport(w http.ResponseWriter, r *http.Request) {
 	} else {
 		writeCSV(ctx, w, d.Data)
 	}
+}
+
+func getProperDomainNameFromUrl(u string) (string, error) {
+	uri, err := url.Parse(u)
+	if err != nil {
+		return ``, fmt.Errorf("The URL seems to be invalid")
+	}
+
+	p := strings.Split(uri.Host, ".")
+
+	if len(p) < 2 {
+		return ``, fmt.Errorf("The URL seems to be invalid")
+	}
+
+	p = p[len(p)-2 : len(p)]
+
+	return strings.Join(p, "."), nil
 }

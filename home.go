@@ -50,6 +50,8 @@ func handleHomePage(w http.ResponseWriter, r *http.Request) {
 	switch err {
 	case "notOnGoogleApps":
 		message = `<h4> This URL is not hosted on Google Apps </h4>`
+	case "badUrl":
+		message = `<h4> An invalid URL was entered </h4>`
 	}
 
 	fmt.Fprintf(w, html, message)
