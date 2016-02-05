@@ -58,28 +58,28 @@ func handleContacts(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ctx := appengine.NewContext(r)
-	config.RedirectURL = `http://www.cloudtest1.com/contacts/export`
-	url := config.AuthCodeURL(yeah)
+	config.RedirectURL = fmt.Sprintf(`http://%s/contacts/export`, r.Host)
+
+	x := AppState{url}
+	url = config.AuthCodeURL(x.encodeState())
 	ctx.Infof("Auth: %v", url)
+
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 }
 
 func handleContactsExport(w http.ResponseWriter, r *http.Request) {
-	ctx := appengine.NewContext(r)
+	y := r.FormValue("state")
 
-	state := r.FormValue("state")
-	if state != yeah {
-		ctx.Errorf("invalid state '%v'", state)
-		return
-	}
+	state := new(AppState)
+	state.decodeState(y)
 
 	w.Header().Set(`Content-Type`, `application/csv`)
 	w.Header().Set(`Content-Disposition`, `attachment; filename="export.csv"`)
 
-	buf := loadFullFeed(ctx, r)
+	ctx := appengine.NewContext(r)
+	buf := loadFullFeed(state.Domain, ctx, r)
 
 	ctx.Infof("%v", buf.String())
-
 	writeCSV(ctx, w, buf.Bytes())
 }
 

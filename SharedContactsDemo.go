@@ -34,7 +34,7 @@ import (
 	newappengine "google.golang.org/appengine"
 )
 
-const feedUrl = `https://www.google.com/m8/feeds/contacts/cloudtest1.com/full`
+const feedUrl = `https://www.google.com/m8/feeds/contacts/%s/full?v=3.0`
 
 var inp_file multipart.File
 
@@ -284,10 +284,10 @@ func writeCSV(ctx appengine.Context, w http.ResponseWriter, data []byte) {
 	}
 }
 
-func loadFullFeed(ctx appengine.Context, r *http.Request) (buf *bytes.Buffer) {
+func loadFullFeed(domain string, ctx appengine.Context, r *http.Request) (buf *bytes.Buffer) {
 	newctx := newappengine.NewContext(r)
 
-	tok, err := config.Exchange(newctx /*oauth2.NoContext*/, r.FormValue("code"))
+	tok, err := config.Exchange(newctx, r.FormValue("code"))
 	if err != nil {
 		ctx.Errorf("exchange error: %v", err)
 		return
@@ -297,7 +297,7 @@ func loadFullFeed(ctx appengine.Context, r *http.Request) (buf *bytes.Buffer) {
 
 	client := config.Client(newctx, tok)
 
-	res, err := client.Get(feedUrl)
+	res, err := client.Get(fmt.Sprintf(feedUrl, domain))
 	if err != nil {
 		ctx.Errorf("get: %v", err)
 		return
