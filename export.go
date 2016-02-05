@@ -41,18 +41,20 @@ func isUrlOnGoogleApp(writer http.ResponseWriter, request *http.Request, url str
 }
 
 func handleContacts(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "POST" {
-		url, err := getProperDomainNameFromUrl(r.FormValue("url"))
+	if r.Method != "POST" {
+		http.Redirect(w, r, "/?error=noDirectAccess", http.StatusTemporaryRedirect)
+		return
+	}
 
-		if err != nil {
-			http.Redirect(w, r, "/?error=badUrl", http.StatusTemporaryRedirect)
-			return
-		}
+	url, err := getProperDomainNameFromUrl(r.FormValue("url"))
+	if err != nil {
+		http.Redirect(w, r, "/?error=badUrl", http.StatusTemporaryRedirect)
+		return
+	}
 
-		if !isUrlOnGoogleApp(w, r, url) {
-			http.Redirect(w, r, "/?error=notOnGoogleApps", http.StatusTemporaryRedirect)
-			return
-		}
+	if !isUrlOnGoogleApp(w, r, url) {
+		http.Redirect(w, r, "/?error=notOnGoogleApps", http.StatusTemporaryRedirect)
+		return
 	}
 
 	ctx := appengine.NewContext(r)
