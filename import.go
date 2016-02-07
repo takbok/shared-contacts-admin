@@ -20,11 +20,24 @@ func init() {
 }
 
 func handleImport(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Redirect(w, r, "/?error=noDirectAccess", http.StatusTemporaryRedirect)
+		return
+	}
+
+	url, err := getProperDomainNameFromUrl(r.FormValue("url"))
+	if err != nil {
+		http.Redirect(w, r, "/?error=badUrl", http.StatusTemporaryRedirect)
+		return
+	}
+
+	if !isUrlOnGoogleApp(w, r, url) {
+		http.Redirect(w, r, "/?error=notOnGoogleApps", http.StatusTemporaryRedirect)
+		return
+	}
+
 	r.ParseMultipartForm(32 << 20)
-
-	var err error
 	inp_file, _, err = r.FormFile("inputfile")
-
 	if err != nil {
 		log.Print("\n returning bcoz of error 1")
 		log.Print(err)
@@ -32,28 +45,26 @@ func handleImport(w http.ResponseWriter, r *http.Request) {
 	}
 	defer inp_file.Close()
 
-        config.RedirectURL = `http://www.cloudtest1.com/import/do`
-	url := config.AuthCodeURL(yeah)
-
+	x := AppState{url}
 	ctx := appengine.NewContext(r)
+	config.RedirectURL = fmt.Sprintf(`http://%s/import/do`, r.Host)
+
+	url = config.AuthCodeURL(x.encodeState())
 	ctx.Infof("Auth: %v", url)
 
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 }
 
 func handleImportDo(w http.ResponseWriter, r *http.Request) {
+	y := r.FormValue("state")
+
+	state := new(AppState)
+	state.decodeState(y)
 
 	ctx := appengine.NewContext(r)
-
-	state := r.FormValue("state")
-	if state != yeah {
-		ctx.Errorf("invalid state '%v'", state)
-		return
-	}
-
 	newctx := newappengine.NewContext(r)
 
-	tok, err := config.Exchange(newctx /*oauth2.NoContext*/, r.FormValue("code"))
+	tok, err := config.Exchange(newctx, r.FormValue("code"))
 	if err != nil {
 		ctx.Errorf("exchange error: %v", err)
 		return
@@ -68,9 +79,11 @@ func handleImportDo(w http.ResponseWriter, r *http.Request) {
 		ctx.Errorf("%v", err)
 		return
 	}
+
 	names := records[0]
 	datalen := len(records)
 	log.Print("\n Loop started")
+
 	for i := 1; i < datalen; i++ {
 		rec := records[i]
 		buf := new(bytes.Buffer)
@@ -96,9 +109,10 @@ func handleImportDo(w http.ResponseWriter, r *http.Request) {
 				numExtended++
 			}
 		}
+
 		fmt.Fprintf(buf, `</atom:entry>`)
 
-		res, _ := client.Post(feedUrl, `application/atom+xml`, strings.NewReader(buf.String()))
+		res, _ := client.Post(fmt.Sprintf(feedUrl, state.Domain), `application/atom+xml`, strings.NewReader(buf.String()))
 
 		fmt.Fprintf(w, "Result: %v<br/>", res.Status)
 	}

@@ -28,13 +28,10 @@ import (
 
 	"appengine"
 
-	"golang.org/x/oauth2"
-	"golang.org/x/oauth2/google"
-
 	newappengine "google.golang.org/appengine"
 )
 
-const feedUrl = `https://www.google.com/m8/feeds/contacts/cloudtest1.com/full?v=3.0`
+const feedUrl = `https://www.google.com/m8/feeds/contacts/%s/full?v=3.0`
 
 var inp_file multipart.File
 
@@ -173,18 +170,6 @@ type ImportData struct {
 	Data []byte
 }
 
-var (
-	config = &oauth2.Config{
-		ClientID:     `80201252386-1brqe0b153fc6liqrgic70rjujsu030i.apps.googleusercontent.com`,
-		ClientSecret: `z1eY8F0Wp-HOud0DALh5PlTq`,
-		RedirectURL:  `http://www.cloudtest1.com/import/do`,
-		Scopes:       []string{`http://www.google.com/m8/feeds/contacts/`},
-		Endpoint:     google.Endpoint,
-	}
-
-	yeah = "yeah"
-)
-
 func writeCSV(ctx appengine.Context, w http.ResponseWriter, data []byte) {
 	var feed Feed
 	if err := xml.Unmarshal(data, &feed); err != nil {
@@ -284,10 +269,10 @@ func writeCSV(ctx appengine.Context, w http.ResponseWriter, data []byte) {
 	}
 }
 
-func loadFullFeed(ctx appengine.Context, r *http.Request) (buf *bytes.Buffer) {
+func loadFullFeed(domain string, ctx appengine.Context, r *http.Request) (buf *bytes.Buffer) {
 	newctx := newappengine.NewContext(r)
 
-	tok, err := config.Exchange(newctx /*oauth2.NoContext*/, r.FormValue("code"))
+	tok, err := config.Exchange(newctx, r.FormValue("code"))
 	if err != nil {
 		ctx.Errorf("exchange error: %v", err)
 		return
@@ -297,7 +282,7 @@ func loadFullFeed(ctx appengine.Context, r *http.Request) (buf *bytes.Buffer) {
 
 	client := config.Client(newctx, tok)
 
-	res, err := client.Get(feedUrl)
+	res, err := client.Get(fmt.Sprintf(feedUrl, domain))
 	if err != nil {
 		ctx.Errorf("get: %v", err)
 		return

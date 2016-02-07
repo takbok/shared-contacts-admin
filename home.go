@@ -22,14 +22,20 @@ a.button {
     </style>
   </head>
   <body>
-    <a class="button" href="/contacts">Get Shared Contacts</a>
-	<br/><hr/>
-	<form enctype="multipart/form-data" action="/import" method="post">
-      <input type="file" name="inputfile" />
-      <input type="submit" value="Import" />
+	%s
+	<form action="/contacts" method="post">
+	  <span> Domain hosted with Google Apps for Business </span>
+	  <label for="app_url"></label> <input id="app_url" type="url" name="url" placeholder="http://www.example.com" />
+	  <input type="submit" value="Set Domain" />
 	</form>
 	<br/><hr/>
-    <a class="button" href="/export">Export</a><br/>
+	<form enctype="multipart/form-data" action="/import" method="post">
+      <input type="file" name="inputfile" /><br/>
+	  <span> Domain hosted with Google Apps for Business </span>
+	  <label for="app_url"></label> <input id="app_url" type="url" name="url" placeholder="http://www.example.com" />
+      <input type="submit" value="Import CSV" />
+	</form>
+	<br/><hr/>
   </body>
 </html>
 `
@@ -39,5 +45,15 @@ func init() {
 }
 
 func handleHomePage(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, html)
+	err := r.FormValue("error")
+	message := ""
+
+	switch err {
+	case "notOnGoogleApps":
+		message = `<h4> This URL is not hosted on Google Apps </h4>`
+	case "badUrl":
+		message = `<h4> An invalid URL was entered </h4>`
+	}
+
+	fmt.Fprintf(w, html, message)
 }
