@@ -26,7 +26,7 @@ a.button {
 	<form action="/contacts" method="post">
 	  <span> Domain hosted with Google Apps for Business </span>
 	  <label for="app_url"></label> <input id="app_url" type="url" name="url" placeholder="http://www.example.com" />
-	  <input type="submit" value="Set Domain" />
+	  <input type="submit" value="Set Domain & Export CSV" />
 	</form>
 	<br/><hr/>
 	<form enctype="multipart/form-data" action="/import" method="post">
