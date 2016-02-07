@@ -45,25 +45,23 @@ func handleImport(w http.ResponseWriter, r *http.Request) {
 	}
 	defer inp_file.Close()
 
-	config.RedirectURL = `http://www.cloudtest1.com/import/do`
-	url := config.AuthCodeURL(yeah)
-
+	x := AppState{url}
 	ctx := appengine.NewContext(r)
+	config.RedirectURL = fmt.Sprintf(`http://%s/import/do`, r.Host)
+
+	url = config.AuthCodeURL(x.encodeState())
 	ctx.Infof("Auth: %v", url)
 
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 }
 
 func handleImportDo(w http.ResponseWriter, r *http.Request) {
+	y := r.FormValue("state")
+
+	state := new(AppState)
+	state.decodeState(y)
 
 	ctx := appengine.NewContext(r)
-
-	state := r.FormValue("state")
-	if state != yeah {
-		ctx.Errorf("invalid state '%v'", state)
-		return
-	}
-
 	newctx := newappengine.NewContext(r)
 
 	tok, err := config.Exchange(newctx, r.FormValue("code"))
@@ -114,7 +112,7 @@ func handleImportDo(w http.ResponseWriter, r *http.Request) {
 
 		fmt.Fprintf(buf, `</atom:entry>`)
 
-		res, _ := client.Post(feedUrl, `application/atom+xml`, strings.NewReader(buf.String()))
+		res, _ := client.Post(fmt.Sprintf(feedUrl, state.Domain), `application/atom+xml`, strings.NewReader(buf.String()))
 
 		fmt.Fprintf(w, "Result: %v<br/>", res.Status)
 	}
