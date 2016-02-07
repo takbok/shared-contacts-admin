@@ -1,7 +1,7 @@
 package demo
 
 import (
-	//"fmt"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
