@@ -30,11 +30,12 @@ a.button {
 	</form>
 	<br/><hr/>
 	<form enctype="multipart/form-data" action="/import" method="post">
-      <input type="file" name="inputfile" />
-      <input type="submit" value="Import" />
+      <input type="file" name="inputfile" /><br/>
+	  <span> Domain hosted with Google Apps for Business </span>
+	  <label for="app_url"></label> <input id="app_url" type="url" name="url" placeholder="http://www.example.com" />
+      <input type="submit" value="Import CSV" />
 	</form>
 	<br/><hr/>
-    <a class="button" href="/export">Export</a><br/>
   </body>
 </html>
 `
