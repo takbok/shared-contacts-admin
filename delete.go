@@ -7,6 +7,10 @@ import (
 	"appengine"
 )
 
+func init() {
+	http.HandleFunc("/contacts/delete", deleteAllContacts)
+}
+
 func initiateContactsDeletion(w http.ResponseWriter, r *http.Request, url string) {
 	ctx := appengine.NewContext(r)
 	config.RedirectURL = fmt.Sprintf(`http://%s/contacts/delete`, r.Host)
@@ -16,4 +20,11 @@ func initiateContactsDeletion(w http.ResponseWriter, r *http.Request, url string
 	ctx.Infof("Auth: %v", url)
 
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
+}
+
+func deleteAllContacts(w http.ResponseWriter, r *http.Request) {
+	y := r.FormValue("state")
+
+	state := new(AppState)
+	state.decodeState(y)
 }
