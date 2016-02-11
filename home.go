@@ -49,12 +49,20 @@ a.button {
       <input type="submit" value="Import CSV" />
 	</form>
 	<br/><hr/>
+	<form enctype="multipart/form-data" action="/set-action" method="post">
+	  <span> Domain hosted with Google Apps for Business </span>
+	  <label for="app_url"></label> <input id="app_url" type="url" name="url" placeholder="http://www.example.com" />
+	  <button type="submit" name="what" value="delete">Delete All Contacts</button>
+	</form>
+	<br/><hr/>
   </body>
 </html>
 `
 
 func init() {
 	http.HandleFunc("/", handleHomePage)
+
+	http.HandleFunc("/set-action", setAction)
 }
 
 func handleHomePage(w http.ResponseWriter, r *http.Request) {
@@ -69,4 +77,27 @@ func handleHomePage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Fprintf(w, html, message)
+}
+
+func setAction(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Redirect(w, r, "/?error=noDirectAccess", http.StatusTemporaryRedirect)
+		return
+	}
+
+	url, err := getProperDomainNameFromUrl(r.FormValue("url"))
+	if err != nil {
+		http.Redirect(w, r, "/?error=badUrl", http.StatusTemporaryRedirect)
+		return
+	}
+
+	if !isUrlOnGoogleApp(w, r, url) {
+		http.Redirect(w, r, "/?error=notOnGoogleApps", http.StatusTemporaryRedirect)
+		return
+	}
+
+	switch r.FormValue("what") {
+	case "delete":
+		initiateContactsDeletion(w, r, url)
+	}
 }

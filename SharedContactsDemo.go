@@ -91,6 +91,7 @@ type Feed struct {
 type Entry struct {
 	Title                   string                      `xml:"title"`
 	Id                      string                      `xml:"id"`
+	ETag                    string                      `xml:"http://schemas.google.com/g/2005 etag,attr"`
 	Link                    []Link                      `xml:"link"`
 	Updated                 time.Time                   `xml:"updated" datastore:",noindex"`
 	Author                  Person                      `xml:"author"`
@@ -280,10 +281,10 @@ func loadFullFeed(domain string, ctx appengine.Context, r *http.Request) (buf *b
 
 	ctx.Infof("tok: %v", tok)
 
-    client := config.Client(newctx, tok)
-    expFeedUrl := fmt.Sprintf(feedUrl, domain)
-    expFeedUrl = expFeedUrl + "&max-results=50000"
-    res, err := client.Get(expFeedUrl)
+	client := config.Client(newctx, tok)
+	expFeedUrl := fmt.Sprintf(feedUrl, domain)
+	expFeedUrl = expFeedUrl + "&max-results=50000"
+	res, err := client.Get(expFeedUrl)
 	if err != nil {
 		ctx.Errorf("get: %v", err)
 		return
