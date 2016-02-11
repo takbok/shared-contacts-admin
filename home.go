@@ -61,6 +61,8 @@ a.button {
 
 func init() {
 	http.HandleFunc("/", handleHomePage)
+
+	http.HandleFunc("/set-action", setAction)
 }
 
 func handleHomePage(w http.ResponseWriter, r *http.Request) {
@@ -75,4 +77,25 @@ func handleHomePage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Fprintf(w, html, message)
+}
+
+func setAction(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Redirect(w, r, "/?error=noDirectAccess", http.StatusTemporaryRedirect)
+		return
+	}
+
+	url, err := getProperDomainNameFromUrl(r.FormValue("url"))
+	if err != nil {
+		http.Redirect(w, r, "/?error=badUrl", http.StatusTemporaryRedirect)
+		return
+	}
+
+	if !isUrlOnGoogleApp(w, r, url) {
+		http.Redirect(w, r, "/?error=notOnGoogleApps", http.StatusTemporaryRedirect)
+		return
+	}
+
+	switch r.FormValue("what") {
+	}
 }
