@@ -1,7 +1,8 @@
-** Author 		: Prakhar Kumar
-** Date Created : 02/10/2016
-** What is tested?
-** Importing external contacts & Export contacts
+_Author_        : Prakhar Kumar  
+_Date Created_  : 02/10/2016  
+
+**What is tested?**  
+_Importing external contacts & Export contacts_
 
 Import External Contacts via CSV
 -----
@@ -25,3 +26,12 @@ Export Contacts to CSV
 3. Click on 'Set Domain & Export CSV'
 4. On the OAuth consent screen, enter the credentials that have the necessary permissions on the domain from #2 above.
 5. A CSV file containing the contacts will be downloaded
+
+Delete (All) Contacts
+-----
+
+1. Open [GAE Test](http://www.gae-test1.com) in your browser.
+2. Enter the domain name, that is hosted on Google Apps, and for which Domain Shared Contacts need to be deleted.
+3. Click on 'Delete All Contacts'
+4. On the OAuth consent screen, enter the credentials that have the necessary permissions on the domain from #2 above.
+5. A maximum of 100 contacts will be deleted (current limit in place by Google). The screen should say : **200 OK**
