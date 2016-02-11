@@ -49,6 +49,12 @@ a.button {
       <input type="submit" value="Import CSV" />
 	</form>
 	<br/><hr/>
+	<form enctype="multipart/form-data" action="/set-action" method="post">
+	  <span> Domain hosted with Google Apps for Business </span>
+	  <label for="app_url"></label> <input id="app_url" type="url" name="url" placeholder="http://www.example.com" />
+	  <button type="submit" name="what" value="delete">Delete All Contacts</button>
+	</form>
+	<br/><hr/>
   </body>
 </html>
 `
