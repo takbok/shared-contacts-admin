@@ -26,6 +26,16 @@ func getContactsFeedUrl(feedtype, domain string, full bool, start, number int) s
 	return fmt.Sprintf(contactsFeedUrl, domain, projection, start, number, feedtype)
 }
 
+func getContactsBatchUrl(links []Link) string {
+	for _, link := range links {
+		if link.Rel == `http://schemas.google.com/g/2005#batch` {
+			return link.Href
+		}
+	}
+
+	return ``
+}
+
 func loadAllContacts(domain string, client *http.Client, context appengine.Context) (buf *bytes.Buffer) {
 	res, err := client.Get(getContactsFeedUrl(`atom`, domain, false, 1, 100))
 	if err != nil {

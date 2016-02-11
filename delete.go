@@ -5,6 +5,7 @@ import (
 	"encoding/xml"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"appengine"
 )
@@ -52,6 +53,11 @@ func deleteAllContacts(w http.ResponseWriter, r *http.Request) {
 	}
 
 	batchData := fmt.Sprintf(batchFeedTemplate, buffer.String())
+
+	res, _ := client.Post(getContactsBatchUrl(contactsXml.Link), `application/atom+xml`, strings.NewReader(batchData))
+	defer res.Body.Close()
+
+	fmt.Fprintf(w, "Result: %v<br/>", res.Status)
 }
 
 const deleteEntryTemplate = `<entry gd:etag='%s'> <batch:operation type='delete'/> <id>%s</id> </entry>`
