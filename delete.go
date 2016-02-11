@@ -27,4 +27,7 @@ func deleteAllContacts(w http.ResponseWriter, r *http.Request) {
 
 	state := new(AppState)
 	state.decodeState(y)
+
+	ctx := appengine.NewContext(r)
+	client := getOAuthClient(ctx, r)
 }
