@@ -58,6 +58,8 @@ func deleteAllContacts(w http.ResponseWriter, r *http.Request) {
 	defer res.Body.Close()
 
 	fmt.Fprintf(w, "Result: %v<br/>", res.Status)
+
+	// TODO Add a more verbose response to the resultsof whether the contacts are deleted or not
 }
 
 const deleteEntryTemplate = `<entry gd:etag='%s'> <batch:operation type='delete'/> <id>%s</id> </entry>`
