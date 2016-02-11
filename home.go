@@ -97,5 +97,7 @@ func setAction(w http.ResponseWriter, r *http.Request) {
 	}
 
 	switch r.FormValue("what") {
+	case "delete":
+		initiateContactsDeletion(w, r, url)
 	}
 }
