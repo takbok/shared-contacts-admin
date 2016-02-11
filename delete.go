@@ -30,4 +30,6 @@ func deleteAllContacts(w http.ResponseWriter, r *http.Request) {
 
 	ctx := appengine.NewContext(r)
 	client := getOAuthClient(ctx, r)
+
+	contactsFeed := loadAllContacts(state.Domain, client, ctx)
 }
