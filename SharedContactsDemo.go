@@ -91,6 +91,7 @@ type Feed struct {
 type Entry struct {
 	Title                   string                      `xml:"title"`
 	Id                      string                      `xml:"id"`
+	ETag                    string                      `xml:"http://schemas.google.com/g/2005 etag,attr"`
 	Link                    []Link                      `xml:"link"`
 	Updated                 time.Time                   `xml:"updated" datastore:",noindex"`
 	Author                  Person                      `xml:"author"`

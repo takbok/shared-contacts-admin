@@ -1,6 +1,7 @@
 package demo
 
 import (
+	"encoding/xml"
 	"fmt"
 	"net/http"
 
@@ -32,4 +33,10 @@ func deleteAllContacts(w http.ResponseWriter, r *http.Request) {
 	client := getOAuthClient(ctx, r)
 
 	contactsFeed := loadAllContacts(state.Domain, client, ctx)
+
+	var contactsXml Feed
+	if err := xml.Unmarshal(contactsFeed.Bytes(), &contactsXml); err != nil {
+		ctx.Errorf("unmarshal feed: %v", err)
+		return
+	}
 }
