@@ -1,6 +1,7 @@
 package demo
 
 import (
+	"bytes"
 	"encoding/xml"
 	"fmt"
 	"net/http"
@@ -39,4 +40,18 @@ func deleteAllContacts(w http.ResponseWriter, r *http.Request) {
 		ctx.Errorf("unmarshal feed: %v", err)
 		return
 	}
+
+	var buffer bytes.Buffer
+
+	for _, entry := range contactsXml.Entry {
+		for _, link := range entry.Link {
+			if link.Rel == `edit` {
+				buffer.WriteString(fmt.Sprintf(deleteEntryTemplate, entry.ETag, link.Href))
+			}
+		}
+	}
+
+	batchData := fmt.Sprintf(batchFeedTemplate, buffer.String())
 }
+
+const deleteEntryTemplate = `<entry gd:etag='%s'> <batch:operation type='delete'/> <id>%s</id> </entry>`

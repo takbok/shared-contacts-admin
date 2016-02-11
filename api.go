@@ -53,3 +53,13 @@ func getOAuthClient(context appengine.Context, r *http.Request) *http.Client {
 
 	return config.Client(newctx, tok)
 }
+
+const batchFeedTemplate = `<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns='http://www.w3.org/2005/Atom'
+      xmlns:gContact='http://schemas.google.com/contact/2008'
+      xmlns:gd='http://schemas.google.com/g/2005'
+      xmlns:batch='http://schemas.google.com/gdata/batch'>
+  <category scheme='http://schemas.google.com/g/2005#kind'
+      term='http://schemas.google.com/g/2008#contact' />
+  %s
+</feed>`
