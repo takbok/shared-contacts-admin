@@ -104,10 +104,10 @@ func handleImportDo(w http.ResponseWriter, r *http.Request) {
     xmlns:gd='http://schemas.google.com/g/2005'>
   <atom:category scheme='http://schemas.google.com/g/2005#kind'
     term='http://schemas.google.com/contact/2008#contact' />`)
-		var nameBuf, emailBuf, imBuf, orgBuf, phoneBuf, extendedBuf, postalAdress string
+		var nameBuf, emailBuf, imBuf, orgBuf, phoneBuf, extendedBuf, postalAdress, customBuf string
 		numExtendedProp, maxExtendedProp := 0, 10
 		orgBuf = `<gd:organization label="Company" primary="true">` + "\n"
-		postalAdress = `<gd:structuredPostalAddress label='Business Address'>` + "\n"
+		customBuf = `<gd:extendedProperty name="Custom">` + "\n"
 		for j, s := range names {
 			//skip unmatched entries
 			if s == "Action" {
@@ -140,6 +140,13 @@ func handleImportDo(w http.ResponseWriter, r *http.Request) {
 				imBuf += fmt.Sprintf(`<gd:im label="%v" address="%v"/>` + "\n", s, rec[j])
 				continue
 			}
+			/*if strings.Contains(s, "Custom") {
+				if strings.Trim(rec[j], " ") != "" {
+					s = strings.Replace(s, "Custom ", "", -1)
+					customBuf += fmt.Sprintf("<%v>%v</%v>\n", s, rec[j], s)
+				}
+				continue
+			}*/
 			switch(s){
 				case "Name" :
 				nameBuf += fmt.Sprintf("\n" + `<gd:fullName>%v</gd:fullName>`, rec[j])
@@ -174,63 +181,84 @@ func handleImportDo(w http.ResponseWriter, r *http.Request) {
 				}
 				orgBuf += fmt.Sprintf(`<gd:orgJobDescription>%v</gd:orgJobDescription>` + "\n", rec[j])
 				break
-				case "Business Fax" :
+				case "Business Fax" 	:
 				if strings.Trim(rec[j], " ") == "" {
 					continue;
 				}
 				phoneBuf += fmt.Sprintf(`<gd:phoneNumber label="%v">%v</gd:phoneNumber>` + "\n", s, rec[j])
-				break;
-				case "Business Phone" :
+				break
+				case "Business Phone" 	:
 				if strings.Trim(rec[j], " ") == "" {
 					continue;
 				}
 				phoneBuf += fmt.Sprintf(`<gd:phoneNumber label="%v">%v</gd:phoneNumber>` + "\n", s, rec[j])
-				break;
-				case "Business Phone 2" :
+				break
+				case "Business Phone 2":
 				if strings.Trim(rec[j], " ") == "" {
 					continue;
 				}
 				phoneBuf += fmt.Sprintf(`<gd:phoneNumber label="%v">%v</gd:phoneNumber>` + "\n", s, rec[j])
-				break;
-				case "Home Fax" :
+				break
+				case "Home Fax" 		:
 				if strings.Trim(rec[j], " ") == "" {
 					continue;
 				}
 				phoneBuf += fmt.Sprintf(`<gd:phoneNumber label="%v">%v</gd:phoneNumber>` + "\n", s, rec[j])
-				break;
-				case "Home Phone" :
+				break
+				case "Home Phone" 		:
 				if strings.Trim(rec[j], " ") == "" {
 					continue;
 				}
 				phoneBuf += fmt.Sprintf(`<gd:phoneNumber label="%v">%v</gd:phoneNumber>` + "\n", s, rec[j])
-				break;
-				case "Home Phone 2" :
+				break
+				case "Home Phone 2" 	:
 				if strings.Trim(rec[j], " ") == "" {
 					continue;
 				}
 				phoneBuf += fmt.Sprintf(`<gd:phoneNumber label="%v">%v</gd:phoneNumber>` + "\n", s, rec[j])
-				break;
-				case "Other Phone" :
+				break
+				case "Other Phone" 		:
 				if strings.Trim(rec[j], " ") == "" {
 					continue;
 				}
 				phoneBuf += fmt.Sprintf(`<gd:phoneNumber label="%v">%v</gd:phoneNumber>` + "\n", s, rec[j])
-				break;
-				case "Mobile Phone" :
+				break
+				case "Mobile Phone" 	:
 				if strings.Trim(rec[j], " ") == "" {
 					continue;
 				}
 				phoneBuf += fmt.Sprintf(`<gd:phoneNumber label="%v">%v</gd:phoneNumber>` + "\n", s, rec[j])
-				break;
-				case "Pager" :
+				break
+				case "Pager" 			:
 				if strings.Trim(rec[j], " ") == "" {
 					continue;
 				}
 				phoneBuf += fmt.Sprintf(`<gd:phoneNumber label="%v">%v</gd:phoneNumber>` + "\n", s, rec[j])
-				break;
-				case "Business Address" :
+				break
+				case "Home Address" :
+				if strings.Trim(rec[j], " ") == "" {
+					continue;
+				}
+				postalAdress += fmt.Sprintf(`<gd:structuredPostalAddress label='%v'>` + "\n", s)
 				postalAdress += fmt.Sprintf(`<gd:formattedAddress>%v</gd:formattedAddress>` + "\n", rec[j])
-				break;
+				postalAdress += "</gd:structuredPostalAddress>\n"
+				break
+				case "Other Address" :
+				if strings.Trim(rec[j], " ") == "" {
+					continue;
+				}
+				postalAdress += fmt.Sprintf(`<gd:structuredPostalAddress label='%v'>` + "\n", s)
+				postalAdress += fmt.Sprintf(`<gd:formattedAddress>%v</gd:formattedAddress>` + "\n", rec[j])
+				postalAdress += "</gd:structuredPostalAddress>\n"
+				break
+				case "Business Address" :
+				if strings.Trim(rec[j], " ") == "" {
+					continue;
+				}
+				postalAdress += fmt.Sprintf(`<gd:structuredPostalAddress label='%v'>` + "\n", s)
+				postalAdress += fmt.Sprintf(`<gd:formattedAddress>%v</gd:formattedAddress>` + "\n", rec[j])
+				postalAdress += "</gd:structuredPostalAddress>\n"
+				break
 				default :
 				if numExtendedProp >= maxExtendedProp {
 					fmt.Fprintf(w, "Skipped Property Name='%v' value='%v'\n", s, rec[j])
@@ -250,8 +278,9 @@ func handleImportDo(w http.ResponseWriter, r *http.Request) {
 		orgBuf += "</gd:organization>\n"
 		fmt.Fprintf(buf, orgBuf)
 		fmt.Fprintf(buf, phoneBuf)
-		postalAdress += "</gd:structuredPostalAddress>\n"
 		fmt.Fprintf(buf, postalAdress)
+		customBuf += "</gd:extendedProperty>\n"
+		//fmt.Fprintf(buf, customBuf)
 		fmt.Fprintf(buf, extendedBuf)
 
 		fmt.Fprintf(buf, `</atom:entry>`)
