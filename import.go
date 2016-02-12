@@ -100,17 +100,36 @@ func handleImportDo(w http.ResponseWriter, r *http.Request) {
 	for i := 1; i < datalen; i++ {
 		rec := records[i]
 		buf := new(bytes.Buffer)
-		fmt.Fprintf(buf, `<atom:entry xmlns:atom='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005'>
-<atom:category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/contact/2008#contact' />
-<atom:content type='text'>Notes</atom:content>
-`)
-		var nameBuf, emailBuf, imBuf, orgBuf, extendedBuf string
-		//var phoneBuf string
-		orgBuf = `<gd:organization rel="http://schemas.google.com/g/2005#work" primary="true">` + "\n"
-		numChk, maxChk := 0, 9
+		fmt.Fprintf(buf, `<atom:entry xmlns:atom='http://www.w3.org/2005/Atom'
+    xmlns:gd='http://schemas.google.com/g/2005'>
+  <atom:category scheme='http://schemas.google.com/g/2005#kind'
+    term='http://schemas.google.com/contact/2008#contact' />`)
+		var nameBuf, emailBuf, imBuf, orgBuf, phoneBuf, extendedBuf, postalAdress string
+		numExtendedProp, maxExtendedProp := 0, 10
+		orgBuf = `<gd:organization label="Company" primary="true">` + "\n"
+		postalAdress = `<gd:structuredPostalAddress label='Business Address'>` + "\n"
 		for j, s := range names {
+			//skip unmatched entries
+			if s == "Action" {
+				continue;
+			}
+			if s == "ID" {
+				continue;
+			}
+			if s == "contactType" {
+				continue;
+			}
+			if s == "domain" {
+				continue;
+			}
+			if s == "apiId" {
+				continue;
+			}
+			if s == "NameLower" {
+				continue;
+			}
 			if s == "E-mail Address" {
-				emailBuf += fmt.Sprintf(`<gd:email rel="http://schemas.google.com/g/2005#home" address="%v" primary="true"/>` + "\n", rec[j])
+				emailBuf += fmt.Sprintf(`<gd:email label="E-mail Address" address="%v"/>` + "\n", rec[j])
 				continue
 			}
 			if strings.Contains(s, "E-mail") {
@@ -118,10 +137,9 @@ func handleImportDo(w http.ResponseWriter, r *http.Request) {
 				continue
 			}
 			if strings.Contains(s, "IM") {
-				imBuf += fmt.Sprintf(`<gd:im address="%v" rel="http://schemas.google.com/g/2005#other"/>` + "\n", rec[j])
+				imBuf += fmt.Sprintf(`<gd:im label="%v" address="%v"/>` + "\n", s, rec[j])
 				continue
 			}
-		
 			switch(s){
 				case "Name" :
 				nameBuf += fmt.Sprintf("\n" + `<gd:fullName>%v</gd:fullName>`, rec[j])
@@ -132,62 +150,108 @@ func handleImportDo(w http.ResponseWriter, r *http.Request) {
 				case "FamilyName" :
 				nameBuf += fmt.Sprintf("\n" + `<gd:familyName>%v</gd:familyName>`, rec[j])
 				break;
-				/*case "Company" :
+				case "Company" :
+				if strings.Trim(rec[j], " ") == "" {
+					continue;
+				}
 				orgBuf += fmt.Sprintf(`<gd:orgName>%v</gd:orgName>` + "\n", rec[j])
 				break
 				case "Job Title" :
+				if strings.Trim(rec[j], " ") == "" {
+					continue;
+				}
 				orgBuf += fmt.Sprintf(`<gd:orgTitle>%v</gd:orgTitle>` + "\n", rec[j])
 				break
 				case "Department" :
+				if strings.Trim(rec[j], " ") == "" {
+					continue;
+				}
 				orgBuf += fmt.Sprintf(`<gd:orgDepartment>%v</gd:orgDepartment>` + "\n", rec[j])
 				break
 				case "Job Description" :
+				if strings.Trim(rec[j], " ") == "" {
+					continue;
+				}
 				orgBuf += fmt.Sprintf(`<gd:orgJobDescription>%v</gd:orgJobDescription>` + "\n", rec[j])
 				break
 				case "Business Fax" :
-				phoneBuf += fmt.Sprintf(`<gd:phoneNumber rel="http://schemas.google.com/g/2005#work_fax" label="%v">\n%v\n</gd:phoneNumber>\n`, s, rec[j])
+				if strings.Trim(rec[j], " ") == "" {
+					continue;
+				}
+				phoneBuf += fmt.Sprintf(`<gd:phoneNumber label="%v">%v</gd:phoneNumber>` + "\n", s, rec[j])
 				break;
 				case "Business Phone" :
-				phoneBuf += fmt.Sprintf(`<gd:phoneNumber rel="http://schemas.google.com/g/2005#work" label="%v">\n%v\n</gd:phoneNumber>\n`, s, rec[j])
+				if strings.Trim(rec[j], " ") == "" {
+					continue;
+				}
+				phoneBuf += fmt.Sprintf(`<gd:phoneNumber label="%v">%v</gd:phoneNumber>` + "\n", s, rec[j])
 				break;
 				case "Business Phone 2" :
-				phoneBuf += fmt.Sprintf(`<gd:phoneNumber rel="http://schemas.google.com/g/2005#other" label="%v">\n%v\n</gd:phoneNumber>\n`, s, rec[j])
+				if strings.Trim(rec[j], " ") == "" {
+					continue;
+				}
+				phoneBuf += fmt.Sprintf(`<gd:phoneNumber label="%v">%v</gd:phoneNumber>` + "\n", s, rec[j])
 				break;
 				case "Home Fax" :
-				phoneBuf += fmt.Sprintf(`<gd:phoneNumber rel="http://schemas.google.com/g/2005#home_fax" label="%v">\n%v\n</gd:phoneNumber>\n`, s, rec[j])
+				if strings.Trim(rec[j], " ") == "" {
+					continue;
+				}
+				phoneBuf += fmt.Sprintf(`<gd:phoneNumber label="%v">%v</gd:phoneNumber>` + "\n", s, rec[j])
 				break;
 				case "Home Phone" :
-				phoneBuf += fmt.Sprintf(`<gd:phoneNumber rel="http://schemas.google.com/g/2005#home" label="%v">\n%v\n</gd:phoneNumber>\n`, s, rec[j])
+				if strings.Trim(rec[j], " ") == "" {
+					continue;
+				}
+				phoneBuf += fmt.Sprintf(`<gd:phoneNumber label="%v">%v</gd:phoneNumber>` + "\n", s, rec[j])
 				break;
 				case "Home Phone 2" :
-				phoneBuf += fmt.Sprintf(`<gd:phoneNumber rel="http://schemas.google.com/g/2005#other" label="%v">\n%v\n</gd:phoneNumber>\n`, s, rec[j])
+				if strings.Trim(rec[j], " ") == "" {
+					continue;
+				}
+				phoneBuf += fmt.Sprintf(`<gd:phoneNumber label="%v">%v</gd:phoneNumber>` + "\n", s, rec[j])
 				break;
 				case "Other Phone" :
-				phoneBuf += fmt.Sprintf(`<gd:phoneNumber rel="http://schemas.google.com/g/2005#other" label="%v">'%v\n</gd:phoneNumber>\n`, s, rec[j])
+				if strings.Trim(rec[j], " ") == "" {
+					continue;
+				}
+				phoneBuf += fmt.Sprintf(`<gd:phoneNumber label="%v">%v</gd:phoneNumber>` + "\n", s, rec[j])
 				break;
 				case "Mobile Phone" :
-				phoneBuf += fmt.Sprintf(`<gd:phoneNumber rel="http://schemas.google.com/g/2005#mobile" label="%v">\n%v\n</gd:phoneNumber>\n`, s, rec[j])
+				if strings.Trim(rec[j], " ") == "" {
+					continue;
+				}
+				phoneBuf += fmt.Sprintf(`<gd:phoneNumber label="%v">%v</gd:phoneNumber>` + "\n", s, rec[j])
 				break;
 				case "Pager" :
-				phoneBuf += fmt.Sprintf(`<gd:phoneNumber rel="http://schemas.google.com/g/2005#pager" label="%v">\n%v\n</gd:phoneNumber>\n`, s, rec[j])
-				break;*/
+				if strings.Trim(rec[j], " ") == "" {
+					continue;
+				}
+				phoneBuf += fmt.Sprintf(`<gd:phoneNumber label="%v">%v</gd:phoneNumber>` + "\n", s, rec[j])
+				break;
+				case "Business Address" :
+				postalAdress += fmt.Sprintf(`<gd:formattedAddress>%v</gd:formattedAddress>` + "\n", rec[j])
+				break;
 				default :
-				if numChk > maxChk {
+				if numExtendedProp >= maxExtendedProp {
+					fmt.Fprintf(w, "Skipped Property Name='%v' value='%v'\n", s, rec[j])
 					continue
 				}
-				extendedBuf += fmt.Sprintf(`<gd:extendedProperty name="%v" value="%v" />` + "\n", s, rec[j])
-				numChk += 1
+				fmt.Fprintf(w, "Mapped Property Name='%v' value='%v'\n", s, rec[j])
+				extendedBuf += fmt.Sprintf(`<gd:extendedProperty name='%v' value="%v" />` + "\n", s, rec[j])
+				numExtendedProp += 1
 				break
 			}
 		}
-		nameBuf = "<gd:name>" + nameBuf + "</gd:name>\n"
+		nameBuf = "\n<gd:name>" + nameBuf + "\n</gd:name>\n"
 
 		fmt.Fprintf(buf, nameBuf)
 		fmt.Fprintf(buf, emailBuf)
 		fmt.Fprintf(buf, imBuf)
 		orgBuf += "</gd:organization>\n"
-		//fmt.Fprintf(buf, orgBuf)
-		//fmt.Fprintf(buf, phoneBuf)
+		fmt.Fprintf(buf, orgBuf)
+		fmt.Fprintf(buf, phoneBuf)
+		postalAdress += "</gd:structuredPostalAddress>\n"
+		fmt.Fprintf(buf, postalAdress)
 		fmt.Fprintf(buf, extendedBuf)
 
 		fmt.Fprintf(buf, `</atom:entry>`)
@@ -195,6 +259,7 @@ func handleImportDo(w http.ResponseWriter, r *http.Request) {
 		res, _ := client.Post(fmt.Sprintf(feedUrl, state.Domain), `application/atom+xml`, strings.NewReader(buf.String()))
 
 		fmt.Fprintf(w, "Result: %v<br/>", res.Status)
+		//fmt.Fprintf(w, buf.String())
 
 	}
 }
