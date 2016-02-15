@@ -2,7 +2,7 @@ _Author_        : Dushyant Kumar
 _Date Created_  : 02/15/2016  
 
 **What is tested?**  
-_Exporting external contacts's XML (Standard Atom 1.0 feed)_
+_Exporting external contacts' XML (Standard Atom 1.0 feed)_
 
 Export External Contacts' XML
 -----
