@@ -39,7 +39,13 @@ a.button {
 	<form action="/contacts" method="post">
 	  <span> Domain hosted with Google Apps for Business </span>
 	  <label for="app_url"></label> <input id="app_url" type="url" name="url" placeholder="http://www.example.com" />
-	  <input type="submit" value="Set Domain & Export CSV" />
+	  <input type="submit" value="Export CSV" />
+	</form>
+	<br/><hr/>
+	<form enctype="multipart/form-data" action="/set-action" method="post">
+	  <span> Domain hosted with Google Apps for Business </span>
+	  <label for="app_url"></label> <input id="app_url" type="url" name="url" placeholder="http://www.example.com" />
+	  <button type="submit" name="what" value="xmlExport">Export XML</button>
 	</form>
 	<br/><hr/>
 	<form enctype="multipart/form-data" action="/import" method="post">
@@ -99,5 +105,7 @@ func setAction(w http.ResponseWriter, r *http.Request) {
 	switch r.FormValue("what") {
 	case "delete":
 		initiateContactsDeletion(w, r, url)
+	case "xmlExport":
+		initiateContactsXmlExport(w, r, url)
 	}
 }

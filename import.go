@@ -236,7 +236,7 @@ func handleImportDo(w http.ResponseWriter, r *http.Request) {
 		res, _ := client.Post(fmt.Sprintf(feedUrl, state.Domain), `application/atom+xml`, strings.NewReader(buf.String()))
 
 		fmt.Fprintf(w, "Result: %v<br/>", res.Status)
-		fmt.Fprintf(w, buf.String())
+		//fmt.Fprintf(w, buf.String())
 
 	}
 }
