@@ -45,10 +45,9 @@ func exportXML(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set(`Content-Disposition`, `attachment; filename="`+state.Domain+`-contacts-export.xml"`)
 
 	ctx := appengine.NewContext(r)
-	client := getOAuthClient(ctx, r)
 
-	contactsFeed := loadAllContacts(state.Domain, client, ctx)
+	buf := loadFullFeed(state.Domain, ctx, r)
 	
-	fmt.Fprintf(w, contactsFeed.String())
+	fmt.Fprintf(w, buf.String())
 }
 
