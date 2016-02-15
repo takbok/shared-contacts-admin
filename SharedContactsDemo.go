@@ -22,7 +22,6 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
-	"sort"
 	"strings"
 	"time"
 
@@ -94,12 +93,13 @@ type Entry struct {
 	ETag                    string                      `xml:"http://schemas.google.com/g/2005 etag,attr"`
 	Link                    []Link                      `xml:"link"`
 	Updated                 time.Time                   `xml:"updated" datastore:",noindex"`
-	Author                  Person                      `xml:"author"`
-	Summary                 Text                        `xml:"summary"`
+//	Author                  Person                      `xml:"author"`
+//	Summary                 Text                        `xml:"summary"`
 	Name                    GDName                      `xml:"http://schemas.google.com/g/2005 name"`
 	Im                      []GDIm                      `xml:"http://schemas.google.com/g/2005 im"`
 	Email                   []GDEmail                   `xml:"http://schemas.google.com/g/2005 email"`
 	PhoneNumber             []GDPhoneNumber             `xml:"http://schemas.google.com/g/2005 phoneNumber"`
+	Organization            GDOrganization              `xml:"http://schemas.google.com/g/2005 organization"`
 	StructuredPostalAddress []GDStructuredPostalAddress `xml:"http://schemas.google.com/g/2005 formattedAddress"`
 	ExtendedProperty        []GDExtendedProperty        `xml:"http://schemas.google.com/g/2005 extendedProperty"`
 }
@@ -131,35 +131,62 @@ type Text struct {
 }
 
 type GDName struct {
-	FullName   string `xml:"http://schemas.google.com/g/2005 fullName"`
-	GivenName  string `xml:"http://schemas.google.com/g/2005 givenName"`
-	FamilyName string `xml:"http://schemas.google.com/g/2005 familyName"`
+	FullName   		string `xml:"http://schemas.google.com/g/2005 fullName"`
+	GivenName  		string `xml:"http://schemas.google.com/g/2005 givenName"`
+	FamilyName 		string `xml:"http://schemas.google.com/g/2005 familyName"`
+	AdditionalName 	string `xml:"http://schemas.google.com/g/2005 additionalName"`
+	NamePrefix 		string `xml:"http://schemas.google.com/g/2005 namePrefix"`
+	NameSuffix 		string `xml:"http://schemas.google.com/g/2005 nameSuffix"`
+}
+
+type GDOrganization struct {
+	Label  				string `xml:"label,attr"`
+	Rel  				string `xml:"rel,attr"`
+	Primary  			bool   `xml:"primary,attr"`
+	OrgDepartment 		string `xml:"http://schemas.google.com/g/2005 orgDepartment"`
+	OrgJobDescription 	string `xml:"http://schemas.google.com/g/2005 orgJobDescription"`
+	OrgName 			string `xml:"http://schemas.google.com/g/2005 orgName"`
+	OrgSymbol 			string `xml:"http://schemas.google.com/g/2005 orgSymbol"`
+	OrgTitle 			string `xml:"http://schemas.google.com/g/2005 orgTitle"`
+	Where 				string `xml:"http://schemas.google.com/g/2005 where"`
 }
 
 type GDIm struct {
 	Address  string `xml:"address,attr"`
 	Protocol string `xml:"protocol,attr"`
 	Primary  bool   `xml:"primary,attr"`
+	Label 		string `xml:"label,attr"`
+	Rel 		string `xml:"rel,attr"`
 }
 
 type GDEmail struct {
-	Address string `xml:"address,attr"`
-	Primary bool   `xml:"primary,attr"`
+	Address 	string `xml:"address,attr"`
+	Primary 	bool   `xml:"primary,attr"`
+	Label 		string `xml:"label,attr"`
+	Rel 		string `xml:"rel,attr"`
+	DisplayName	string `xml:"displayName,attr"`
 }
 
 type GDPhoneNumber struct {
 	PhoneNumber string `xml:",chardata"`
 	Primary     bool   `xml:"primary,attr"`
+	Label 		string `xml:"label,attr"`
+	Rel 		string `xml:"rel,attr"`
+	Uri 		string `xml:"uri,attr"`
 }
 
 type GDStructuredPostalAddress struct {
-	Primary          bool   `xml:"primary,attr"`
-	City             string `xml:"city"`
-	Street           string `xml:"street"`
-	Region           string `xml:"region"`
-	Postcode         string `xml:"postcode"`
-	Country          string `xml:"country"`
-	FormattedAddress string `xml:"formattedAddress"`
+	Primary          	bool   `xml:"primary,attr"`
+	City             	string `xml:"city"`
+	Street           	string `xml:"street"`
+	Region           	string `xml:"region"`
+	Postcode         	string `xml:"postcode"`
+	Country          	string `xml:"country"`
+	FormattedAddress 	string `xml:"formattedAddress"`
+	Label 				string `xml:"label,attr"`
+	Rel 				string `xml:"rel,attr"`
+	MailClass 			string `xml:"mailClass,attr"`
+	Usage 				string `xml:"usage,attr"`
 }
 
 type GDExtendedProperty struct {
@@ -177,89 +204,137 @@ func writeCSV(ctx appengine.Context, w http.ResponseWriter, data []byte) {
 		ctx.Errorf("unmarshal feed: %v", err)
 		return
 	}
+	buildColumnMap()
+	
+	contacts := [][]string{}
 
-	contacts, names := [][]string{}, []string{}
-
-	upboundEmail, upboundPhone, upboundIm := 0, 0, 0
-	propNames := []string{}
-	names = append(names, "Id", "FullName", "GivenName", "FamilyName")
+	contacts = append(contacts, column_names)
+	
 	for _, entry := range feed.Entry {
-		if n := len(entry.Email); upboundEmail < n {
-			upboundEmail = n
-		}
-		if n := len(entry.PhoneNumber); upboundPhone < n {
-			upboundPhone = n
-		}
-		if n := len(entry.Im); upboundIm < n {
-			upboundIm = n
-		}
-		for _, p := range entry.ExtendedProperty {
-			existed := false
-			for _, s := range propNames {
-				if s == p.Name {
-					existed = true
-					break
-				}
-			}
-			if !existed {
-				propNames = append(propNames, p.Name)
-			}
-		}
-	}
-	for n := 1; n <= upboundEmail; n++ {
-		names = append(names, fmt.Sprintf("Email %v", n))
-	}
-	for n := 1; n <= upboundPhone; n++ {
-		names = append(names, fmt.Sprintf("Phone %v", n))
-	}
-	for n := 1; n <= upboundIm; n++ {
-		names = append(names, fmt.Sprintf("Im %v", n))
-	}
-	propStart := len(names)
-	sort.Strings(propNames[0:])
-	names = append(names, propNames...)
-	contacts = append(contacts, names)
-
-	for _, entry := range feed.Entry {
-		values := []string{
-			entry.Id,
-			entry.Name.FullName,
-			entry.Name.GivenName,
-			entry.Name.FamilyName,
-		}
-		for n, m := 0, len(entry.Email); n < upboundEmail; n++ {
-			s := ""
-			if n < m {
-				s = entry.Email[n].Address
-			}
-			values = append(values, strings.TrimSpace(s))
-		}
-		for n, m := 0, len(entry.PhoneNumber); n < upboundPhone; n++ {
-			s := ""
-			if n < m {
-				s = entry.PhoneNumber[n].PhoneNumber
-			}
-			values = append(values, strings.TrimSpace(s))
-		}
-		for n, m := 0, len(entry.Im); n < upboundIm; n++ {
-			s := ""
-			if n < m {
-				s = entry.Im[n].Address
-			}
-			values = append(values, strings.TrimSpace(s))
-		}
-		for n, m := 0, len(propNames); n < m; n++ {
+		values := []string{}
+		for n := 0; n < NUM_COLUMNS; n++ {
 			values = append(values, "")
 		}
-		for n, m, x := 0, len(entry.ExtendedProperty), len(propNames); n < m; n++ {
-			ep := &entry.ExtendedProperty[n]
-			for i := 0; i < x; i++ {
-				if ss := propNames[i]; ss == ep.Name {
-					values[propStart+i] = strings.TrimSpace(ep.Value)
-					break
+		values[ACTION_COL_IDX] = "update"
+		str := entry.Id
+		str = strings.Replace(str, "http://www.google.com/m8/feeds/contacts/", "", -1)
+		str = strings.Replace(str, "base/", "", -1)
+		strs := strings.Split(str, "/")
+		values[DOMAIN_COL_IDX] = strs[0]
+		values[ID_COL_IDX] 		= strs[1]
+		values[NAME_COL_IDX] 	= entry.Name.FullName
+		values[NAMELOWER_COL_IDX] 	= strings.ToLower(entry.Name.FullName)
+
+		values[COMPANY_COL_IDX] 	= entry.Organization.OrgName
+		values[JOBTITLE_COL_IDX] 	= entry.Organization.OrgTitle
+		values[DEPARTMENT_COL_IDX] = entry.Organization.OrgDepartment
+		values[JOBDESCRIPTION_COL_IDX] = entry.Organization.OrgJobDescription
+			
+		numEmails := len(entry.Email)
+		for n := 0; n < numEmails; n++ {
+			if entry.Email[n].Label != "" {
+				colIdx, ok := column_name_map[entry.Email[n].Label]
+				if ok {
+					values[colIdx] = entry.Email[n].Address
+				}
+			} else if entry.Email[n].Rel == "http://schemas.google.com/g/2005#work" {
+				colIdx, ok := column_name_map["E-mail Address"]
+				if ok {
+					values[colIdx] = entry.Email[n].Address
+				}
+			} else {
+				colName := fmt.Sprintf("E-mail %v Address", n + 1)
+				colIdx, ok := column_name_map[colName]
+				if ok {
+					values[colIdx] = entry.Email[n].Address
 				}
 			}
 		}
+
+		numIms := len(entry.Im)
+		imColnames := [2]string{"IM", "IM Rel"}
+		for n := 0; n < numIms; n++ {
+			if entry.Im[n].Label != "" {
+				colIdx, ok := column_name_map[entry.Im[n].Label]
+				if ok {
+					values[colIdx] = entry.Im[n].Address
+				}
+			} else if n < 2 {
+				colIdx, ok := column_name_map[imColnames[n]]
+				if ok {
+					values[colIdx] = entry.Im[n].Address
+				}
+			}
+		}
+
+		numPhNos := len(entry.PhoneNumber)
+		for n := 0; n < numPhNos; n++ {
+			if entry.PhoneNumber[n].Label != "" {
+				colIdx, ok := column_name_map[entry.PhoneNumber[n].Label]
+				if ok {
+					values[colIdx] = entry.PhoneNumber[n].PhoneNumber
+				}
+			} else {
+				phStr := strings.Replace(entry.PhoneNumber[n].Rel, "http://schemas.google.com/g/2005#", "", -1)
+				var colName string
+				switch phStr {
+					case "work":
+					colName = "Business Phone"
+					case "work_fax":
+					colName = "Business Fax"
+					case "mobile":
+					colName = "Mobile Phone"
+					case "home":
+					colName = "Home Phone"
+					case "home_fax":
+					colName = "Home Fax"
+					case "other":
+					colName = "Other Phone"
+					case "pager":
+					colName = "Pager"
+				} 
+				colIdx, ok := column_name_map[colName]
+				if ok {
+					values[colIdx] = entry.PhoneNumber[n].PhoneNumber
+				}
+			}
+		}
+
+		numPostAdds := len(entry.StructuredPostalAddress)
+		for n := 0; n < numPostAdds; n++ {
+			if entry.StructuredPostalAddress[n].Label != "" {
+				colIdx, ok := column_name_map[entry.StructuredPostalAddress[n].Label]
+				if ok {
+					values[colIdx] = entry.StructuredPostalAddress[n].FormattedAddress
+				}
+			} else {
+				addStr := strings.Replace(entry.StructuredPostalAddress[n].Rel, "http://schemas.google.com/g/2005#", "", -1)
+				var colName string
+				switch addStr {
+					case "work":
+					colName = "Business Address"
+					case "home":
+					colName = "Home Address"
+					case "other":
+					colName = "Other Address"
+				} 
+				colIdx, ok := column_name_map[colName]
+				if ok {
+					values[colIdx] = entry.StructuredPostalAddress[n].FormattedAddress
+				}
+			}
+		}
+
+		numExtProps := len(entry.ExtendedProperty)
+		for n := 0; n < numExtProps; n++ {
+			if entry.ExtendedProperty[n].Name != "" {
+				colIdx, ok := column_name_map[entry.ExtendedProperty[n].Name]
+				if ok {
+					values[colIdx] = entry.ExtendedProperty[n].Value
+				}
+			}
+		}
+		
 		contacts = append(contacts, values)
 	}
 
