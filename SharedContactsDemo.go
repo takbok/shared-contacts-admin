@@ -88,13 +88,14 @@ type Feed struct {
 }
 
 type Entry struct {
-	Title                   string                      `xml:"title"`
-	Id                      string                      `xml:"id"`
-	ETag                    string                      `xml:"http://schemas.google.com/g/2005 etag,attr"`
-	Link                    []Link                      `xml:"link"`
-	Updated                 time.Time                   `xml:"updated" datastore:",noindex"`
-//	Author                  Person                      `xml:"author"`
-//	Summary                 Text                        `xml:"summary"`
+	Title   string    `xml:"title"`
+	Id      string    `xml:"id"`
+	ETag    string    `xml:"http://schemas.google.com/g/2005 etag,attr"`
+	Link    []Link    `xml:"link"`
+	Content string    `xml:"content"`
+	Updated time.Time `xml:"updated" datastore:",noindex"`
+	//	Author                  Person                      `xml:"author"`
+	//	Summary                 Text                        `xml:"summary"`
 	Name                    GDName                      `xml:"http://schemas.google.com/g/2005 name"`
 	Im                      []GDIm                      `xml:"http://schemas.google.com/g/2005 im"`
 	Email                   []GDEmail                   `xml:"http://schemas.google.com/g/2005 email"`
@@ -102,6 +103,10 @@ type Entry struct {
 	Organization            GDOrganization              `xml:"http://schemas.google.com/g/2005 organization"`
 	StructuredPostalAddress []GDStructuredPostalAddress `xml:"http://schemas.google.com/g/2005 formattedAddress"`
 	ExtendedProperty        []GDExtendedProperty        `xml:"http://schemas.google.com/g/2005 extendedProperty"`
+	ContactUDField          []GContactUDField           `xml:"http://schemas.google.com/contact/2008 userDefinedField"`
+	ContactWebsite          []GContactWebsite           `xml:"http://schemas.google.com/contact/2008 website"`
+	Birthday                GContactBirthday            `xml:"http://schemas.google.com/contact/2008 birthday"`
+	Nickname                string                      `xml:"http://schemas.google.com/contact/2008 nickname"`
 }
 
 type EntryArb struct {
@@ -125,68 +130,72 @@ type Person struct {
 	InnerXML string `xml:",innerxml"`
 }
 
+type GContactBirthday struct {
+	When string `xml:"when"`
+}
+
 type Text struct {
 	Type string `xml:"type,attr,omitempty"`
 	Body string `xml:",chardata"`
 }
 
 type GDName struct {
-	FullName   		string `xml:"http://schemas.google.com/g/2005 fullName"`
-	GivenName  		string `xml:"http://schemas.google.com/g/2005 givenName"`
-	FamilyName 		string `xml:"http://schemas.google.com/g/2005 familyName"`
-	AdditionalName 	string `xml:"http://schemas.google.com/g/2005 additionalName"`
-	NamePrefix 		string `xml:"http://schemas.google.com/g/2005 namePrefix"`
-	NameSuffix 		string `xml:"http://schemas.google.com/g/2005 nameSuffix"`
+	FullName       string `xml:"http://schemas.google.com/g/2005 fullName"`
+	GivenName      string `xml:"http://schemas.google.com/g/2005 givenName"`
+	FamilyName     string `xml:"http://schemas.google.com/g/2005 familyName"`
+	AdditionalName string `xml:"http://schemas.google.com/g/2005 additionalName"`
+	NamePrefix     string `xml:"http://schemas.google.com/g/2005 namePrefix"`
+	NameSuffix     string `xml:"http://schemas.google.com/g/2005 nameSuffix"`
 }
 
 type GDOrganization struct {
-	Label  				string `xml:"label,attr"`
-	Rel  				string `xml:"rel,attr"`
-	Primary  			bool   `xml:"primary,attr"`
-	OrgDepartment 		string `xml:"http://schemas.google.com/g/2005 orgDepartment"`
-	OrgJobDescription 	string `xml:"http://schemas.google.com/g/2005 orgJobDescription"`
-	OrgName 			string `xml:"http://schemas.google.com/g/2005 orgName"`
-	OrgSymbol 			string `xml:"http://schemas.google.com/g/2005 orgSymbol"`
-	OrgTitle 			string `xml:"http://schemas.google.com/g/2005 orgTitle"`
-	Where 				string `xml:"http://schemas.google.com/g/2005 where"`
+	Label             string `xml:"label,attr"`
+	Rel               string `xml:"rel,attr"`
+	Primary           bool   `xml:"primary,attr"`
+	OrgDepartment     string `xml:"http://schemas.google.com/g/2005 orgDepartment"`
+	OrgJobDescription string `xml:"http://schemas.google.com/g/2005 orgJobDescription"`
+	OrgName           string `xml:"http://schemas.google.com/g/2005 orgName"`
+	OrgSymbol         string `xml:"http://schemas.google.com/g/2005 orgSymbol"`
+	OrgTitle          string `xml:"http://schemas.google.com/g/2005 orgTitle"`
+	Where             string `xml:"http://schemas.google.com/g/2005 where"`
 }
 
 type GDIm struct {
 	Address  string `xml:"address,attr"`
 	Protocol string `xml:"protocol,attr"`
 	Primary  bool   `xml:"primary,attr"`
-	Label 		string `xml:"label,attr"`
-	Rel 		string `xml:"rel,attr"`
+	Label    string `xml:"label,attr"`
+	Rel      string `xml:"rel,attr"`
 }
 
 type GDEmail struct {
-	Address 	string `xml:"address,attr"`
-	Primary 	bool   `xml:"primary,attr"`
-	Label 		string `xml:"label,attr"`
-	Rel 		string `xml:"rel,attr"`
-	DisplayName	string `xml:"displayName,attr"`
+	Address     string `xml:"address,attr"`
+	Primary     bool   `xml:"primary,attr"`
+	Label       string `xml:"label,attr"`
+	Rel         string `xml:"rel,attr"`
+	DisplayName string `xml:"displayName,attr"`
 }
 
 type GDPhoneNumber struct {
 	PhoneNumber string `xml:",chardata"`
 	Primary     bool   `xml:"primary,attr"`
-	Label 		string `xml:"label,attr"`
-	Rel 		string `xml:"rel,attr"`
-	Uri 		string `xml:"uri,attr"`
+	Label       string `xml:"label,attr"`
+	Rel         string `xml:"rel,attr"`
+	Uri         string `xml:"uri,attr"`
 }
 
 type GDStructuredPostalAddress struct {
-	Primary          	bool   `xml:"primary,attr"`
-	City             	string `xml:"city"`
-	Street           	string `xml:"street"`
-	Region           	string `xml:"region"`
-	Postcode         	string `xml:"postcode"`
-	Country          	string `xml:"country"`
-	FormattedAddress 	string `xml:"formattedAddress"`
-	Label 				string `xml:"label,attr"`
-	Rel 				string `xml:"rel,attr"`
-	MailClass 			string `xml:"mailClass,attr"`
-	Usage 				string `xml:"usage,attr"`
+	Primary          bool   `xml:"primary,attr"`
+	City             string `xml:"city"`
+	Street           string `xml:"street"`
+	Region           string `xml:"region"`
+	Postcode         string `xml:"postcode"`
+	Country          string `xml:"country"`
+	FormattedAddress string `xml:"formattedAddress"`
+	Label            string `xml:"label,attr"`
+	Rel              string `xml:"rel,attr"`
+	MailClass        string `xml:"mailClass,attr"`
+	Usage            string `xml:"usage,attr"`
 }
 
 type GDExtendedProperty struct {
@@ -194,6 +203,17 @@ type GDExtendedProperty struct {
 	Value string `xml:"value,attr"`
 }
 
+type GContactUDField struct {
+	Key   string `xml:"key,attr"`
+	Value string `xml:"value,attr"`
+}
+
+type GContactWebsite struct {
+	Webref  string `xml:"href,attr"`
+	Label   string `xml:"label,attr"`
+	Primary bool   `xml:"primary,attr"`
+	Rel     string `xml:"rel,attr"`
+}
 type ImportData struct {
 	Data []byte
 }
@@ -205,11 +225,11 @@ func writeCSV(ctx appengine.Context, w http.ResponseWriter, data []byte) {
 		return
 	}
 	buildColumnMap()
-	
+
 	contacts := [][]string{}
 
 	contacts = append(contacts, column_names)
-	
+
 	for _, entry := range feed.Entry {
 		values := []string{}
 		for n := 0; n < NUM_COLUMNS; n++ {
@@ -221,15 +241,18 @@ func writeCSV(ctx appengine.Context, w http.ResponseWriter, data []byte) {
 		str = strings.Replace(str, "base/", "", -1)
 		strs := strings.Split(str, "/")
 		values[DOMAIN_COL_IDX] = strs[0]
-		values[ID_COL_IDX] 		= strs[1]
-		values[NAME_COL_IDX] 	= entry.Name.FullName
-		values[NAMELOWER_COL_IDX] 	= strings.ToLower(entry.Name.FullName)
+		values[ID_COL_IDX] = strs[1]
+		values[NAME_COL_IDX] = entry.Name.FullName
+		values[NAMELOWER_COL_IDX] = strings.ToLower(entry.Name.FullName)
 
-		values[COMPANY_COL_IDX] 	= entry.Organization.OrgName
-		values[JOBTITLE_COL_IDX] 	= entry.Organization.OrgTitle
+		values[COMPANY_COL_IDX] = entry.Organization.OrgName
+		values[JOBTITLE_COL_IDX] = entry.Organization.OrgTitle
 		values[DEPARTMENT_COL_IDX] = entry.Organization.OrgDepartment
 		values[JOBDESCRIPTION_COL_IDX] = entry.Organization.OrgJobDescription
-			
+		values[NOTES_COL_IDX] = entry.Content
+		values[CONTACTTYPE_COL_IDX] = "External"
+		values[APIID_COL_IDX] = entry.Id
+
 		numEmails := len(entry.Email)
 		for n := 0; n < numEmails; n++ {
 			if entry.Email[n].Label != "" {
@@ -243,7 +266,7 @@ func writeCSV(ctx appengine.Context, w http.ResponseWriter, data []byte) {
 					values[colIdx] = entry.Email[n].Address
 				}
 			} else {
-				colName := fmt.Sprintf("E-mail %v Address", n + 1)
+				colName := fmt.Sprintf("E-mail %v Address", n+1)
 				colIdx, ok := column_name_map[colName]
 				if ok {
 					values[colIdx] = entry.Email[n].Address
@@ -278,21 +301,21 @@ func writeCSV(ctx appengine.Context, w http.ResponseWriter, data []byte) {
 				phStr := strings.Replace(entry.PhoneNumber[n].Rel, "http://schemas.google.com/g/2005#", "", -1)
 				var colName string
 				switch phStr {
-					case "work":
+				case "work":
 					colName = "Business Phone"
-					case "work_fax":
+				case "work_fax":
 					colName = "Business Fax"
-					case "mobile":
+				case "mobile":
 					colName = "Mobile Phone"
-					case "home":
+				case "home":
 					colName = "Home Phone"
-					case "home_fax":
+				case "home_fax":
 					colName = "Home Fax"
-					case "other":
+				case "other":
 					colName = "Other Phone"
-					case "pager":
+				case "pager":
 					colName = "Pager"
-				} 
+				}
 				colIdx, ok := column_name_map[colName]
 				if ok {
 					values[colIdx] = entry.PhoneNumber[n].PhoneNumber
@@ -311,13 +334,13 @@ func writeCSV(ctx appengine.Context, w http.ResponseWriter, data []byte) {
 				addStr := strings.Replace(entry.StructuredPostalAddress[n].Rel, "http://schemas.google.com/g/2005#", "", -1)
 				var colName string
 				switch addStr {
-					case "work":
+				case "work":
 					colName = "Business Address"
-					case "home":
+				case "home":
 					colName = "Home Address"
-					case "other":
+				case "other":
 					colName = "Other Address"
-				} 
+				}
 				colIdx, ok := column_name_map[colName]
 				if ok {
 					values[colIdx] = entry.StructuredPostalAddress[n].FormattedAddress
@@ -334,7 +357,47 @@ func writeCSV(ctx appengine.Context, w http.ResponseWriter, data []byte) {
 				}
 			}
 		}
-		
+
+		numUDs := len(entry.ContactUDField)
+		for n := 0; n < numUDs; n++ {
+			colName1 := fmt.Sprintf("Custom Key%v", n+1)
+			colName2 := fmt.Sprintf("Custom Value%v", n+1)
+			colIdx, ok := column_name_map[colName1]
+			if ok {
+				values[colIdx] = entry.ContactUDField[n].Key
+			}
+			colIdx, ok = column_name_map[colName2]
+			if ok {
+				values[colIdx] = entry.ContactUDField[n].Value
+			}
+		}
+
+		numWebs := len(entry.ContactWebsite)
+		for n := 0; n < numWebs; n++ {
+			var colName string
+			webStr := entry.ContactWebsite[n].Rel
+			switch webStr {
+			case "home-page":
+				colName = "Website Home-Page"
+			case "blog":
+				colName = "Website Blog"
+			case "profile":
+				colName = "Website Profile"
+			case "home":
+				colName = "Website Home"
+			case "work":
+				colName = "Website Work"
+			case "ftp":
+				colName = "Website FTP"
+			}
+			colIdx, ok := column_name_map[colName]
+			if ok {
+				values[colIdx] = entry.ContactWebsite[n].Webref
+			}
+		}
+		values[BIRTHDAY_COL_IDX] = entry.Birthday.When
+		values[NICKNAME_COL_IDX] = entry.Nickname
+
 		contacts = append(contacts, values)
 	}
 
