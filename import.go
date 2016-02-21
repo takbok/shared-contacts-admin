@@ -18,7 +18,6 @@ import (
 	"bytes"
 	"encoding/csv"
 	"fmt"
-	"log"
 	"net/http"
 	"strings"
 
@@ -52,8 +51,6 @@ func handleImport(w http.ResponseWriter, r *http.Request) {
 	r.ParseMultipartForm(32 << 20)
 	inp_file, _, err = r.FormFile("inputfile")
 	if err != nil {
-		log.Print("\n returning bcoz of error 1")
-		log.Print(err)
 		return
 	}
 	defer inp_file.Close()
@@ -88,14 +85,12 @@ func handleImportDo(w http.ResponseWriter, r *http.Request) {
 	cr := csv.NewReader(bufio.NewReader(inp_file))
 	records, err := cr.ReadAll()
 	if err != nil {
-		log.Print("\n CSV file error")
 		ctx.Errorf("%v", err)
 		return
 	}
 
 	names := records[0]
 	datalen := len(records)
-	log.Print("\n Loop started")
 
 	for i := 1; i < datalen; i++ {
 		rec := records[i]
@@ -108,7 +103,7 @@ func handleImportDo(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(buf, "\n")
 
 		var nameBuf, emailBuf, imBuf, orgBuf, phoneBuf, extendedBuf, postalAdress, webBuf, notesBuf string
-		var birthBuf, nickBuf string
+		var birthBuf, nickBuf, externalIdBuf, occBuf string
 		numExtendedProp, maxExtendedProp := 0, 10
 		udKeys := []string{}
 		udValues := []string{}
@@ -224,6 +219,10 @@ func handleImportDo(w http.ResponseWriter, r *http.Request) {
 				birthBuf += fmt.Sprintf("<gContact:birthday when='%v'/>\n", rec[j])
 			case "NickName":
 				nickBuf += fmt.Sprintf("<gContact:nickname>%v</gContact:nickname>\n", rec[j])
+			case "ExternalId":
+				externalIdBuf += fmt.Sprintf("<gContact:externalId value='%v'/>\n", rec[j])
+			case "Occupation":
+				occBuf += fmt.Sprintf("<gContact:occupation>%v</gContact:occupation>\n", rec[j])
 			default:
 				if numExtendedProp >= maxExtendedProp {
 					fmt.Fprintf(w, "Skipped Property Name='%v' value='%v'\n", s, rec[j])
@@ -249,11 +248,17 @@ func handleImportDo(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(buf, postalAdress)
 		fmt.Fprintf(buf, extendedBuf)
 		fmt.Fprintf(buf, webBuf)
-		/*if len(birthBuf) > 0 {
+		if len(birthBuf) > 0 {
 			fmt.Fprintf(buf, birthBuf)
-		}*/
+		}
 		if len(nickBuf) > 0 {
 			fmt.Fprintf(buf, nickBuf)
+		}
+		if len(externalIdBuf) > 0 {
+			fmt.Fprintf(buf, externalIdBuf)
+		}
+		if len(occBuf) > 0 {
+			fmt.Fprintf(buf, occBuf)
 		}
 
 		for j, key := range udKeys {
@@ -265,7 +270,9 @@ func handleImportDo(w http.ResponseWriter, r *http.Request) {
 		res, _ := client.Post(fmt.Sprintf(feedUrl, state.Domain), `application/atom+xml`, strings.NewReader(buf.String()))
 
 		fmt.Fprintf(w, "Result: %v<br/>", res.Status)
-		//fmt.Fprintf(w, buf.String())
+		if res.StatusCode != 201 {
+			fmt.Fprintf(w, buf.String())
+		}
 
 	}
 }

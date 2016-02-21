@@ -101,12 +101,14 @@ type Entry struct {
 	Email                   []GDEmail                   `xml:"http://schemas.google.com/g/2005 email"`
 	PhoneNumber             []GDPhoneNumber             `xml:"http://schemas.google.com/g/2005 phoneNumber"`
 	Organization            GDOrganization              `xml:"http://schemas.google.com/g/2005 organization"`
-	StructuredPostalAddress []GDStructuredPostalAddress `xml:"http://schemas.google.com/g/2005 formattedAddress"`
+	StructuredPostalAddress []GDStructuredPostalAddress `xml:"http://schemas.google.com/g/2005 structuredPostalAddress"`
 	ExtendedProperty        []GDExtendedProperty        `xml:"http://schemas.google.com/g/2005 extendedProperty"`
 	ContactUDField          []GContactUDField           `xml:"http://schemas.google.com/contact/2008 userDefinedField"`
 	ContactWebsite          []GContactWebsite           `xml:"http://schemas.google.com/contact/2008 website"`
 	Birthday                GContactBirthday            `xml:"http://schemas.google.com/contact/2008 birthday"`
 	Nickname                string                      `xml:"http://schemas.google.com/contact/2008 nickname"`
+	ExternalId              []GContactExternalId        `xml:"http://schemas.google.com/contact/2008 externalId"`
+	Occupation              string                      `xml:"http://schemas.google.com/contact/2008 occupation"`
 }
 
 type EntryArb struct {
@@ -131,7 +133,13 @@ type Person struct {
 }
 
 type GContactBirthday struct {
-	When string `xml:"when"`
+	When string `xml:"when,attr"`
+}
+
+type GContactExternalId struct {
+	Label string `xml:"label,attr"`
+	Rel   string `xml:"rel,attr"`
+	Value string `xml:"value,attr"`
 }
 
 type Text struct {
@@ -397,6 +405,10 @@ func writeCSV(ctx appengine.Context, w http.ResponseWriter, data []byte) {
 		}
 		values[BIRTHDAY_COL_IDX] = entry.Birthday.When
 		values[NICKNAME_COL_IDX] = entry.Nickname
+		if len(entry.ExternalId) > 0 {
+			values[EXTERNALID_COL_IDX] = entry.ExternalId[0].Value
+		}
+		values[OCCUPATION_COL_IDX] = entry.Occupation
 
 		contacts = append(contacts, values)
 	}
