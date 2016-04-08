@@ -66,6 +66,8 @@ func handleImport(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleImportDo(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "IMPORT:<br>")
+	ictr := 0
 	y := r.FormValue("state")
 
 	state := new(AppState)
@@ -269,7 +271,8 @@ func handleImportDo(w http.ResponseWriter, r *http.Request) {
 
 		res, _ := client.Post(fmt.Sprintf(feedUrl, state.Domain), `application/atom+xml`, strings.NewReader(buf.String()))
 
-		fmt.Fprintf(w, "Result: %v<br/>", res.Status)
+		ictr++
+		fmt.Fprintf(w, "Result[%v]: %v<br/>", ictr, res.Status)
 		if res.StatusCode != 201 {
 			fmt.Fprintf(w, buf.String())
 		}

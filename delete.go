@@ -39,6 +39,7 @@ func initiateContactsDeletion(w http.ResponseWriter, r *http.Request, url string
 }
 
 func deleteAllContacts(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "DELETE:<br>")
 	y := r.FormValue("state")
 
 	state := new(AppState)
@@ -48,25 +49,30 @@ func deleteAllContacts(w http.ResponseWriter, r *http.Request) {
 	client := getOAuthClient(ctx, r)
 
 	contactsFeed := loadAllContacts(state.Domain, client, ctx)
-
+	//ctx.Infof("contactsFeed: %v", contactsFeed)
 	var contactsXml Feed
 	if err := xml.Unmarshal(contactsFeed.Bytes(), &contactsXml); err != nil {
-		ctx.Errorf("unmarshal feed: %v", err)
+		ctx.Infof("unmarshal feed: %v", err)
 		return
 	}
 
 	var buffer bytes.Buffer
 
+	ictr := 0
 	for _, entry := range contactsXml.Entry {
 		for _, link := range entry.Link {
 			if link.Rel == `edit` {
+				ictr++
+				fmt.Fprintf(w, "Result[%v]: %v<br/>", ictr, link.Rel)
 				buffer.WriteString(fmt.Sprintf(deleteEntryTemplate, entry.ETag, link.Href))
 			}
 		}
 	}
 
 	batchData := fmt.Sprintf(batchFeedTemplate, buffer.String())
+	ctx.Infof("batchData: %v", batchData)
 
+	fmt.Fprintf(w, "Sent batch delete request: [%v] contacts<br/>", ictr)
 	res, _ := client.Post(getContactsBatchUrl(contactsXml.Link), `application/atom+xml`, strings.NewReader(batchData))
 	defer res.Body.Close()
 
