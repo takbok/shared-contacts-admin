@@ -106,7 +106,7 @@ var htmlBody1 = template.Must(template.New("User").Parse(`<!DOCTYPE html>
 
           <div class="btns">
             <a class="reload btn" href="https://github.com/takbok/shared-contacts-admin">Download on Github</a>
-            <p class="text-btn"><a href="#">Video</a> | <a href="https://github.com/takbok/shared-contacts-admin/blob/master/README.md">README</a> | <a href="http://golang-programming.appspot.com/slides?TYPE=SLIDE&DOC_ID=87&SID=TDSSLIDE-87">SLIDES</a></p>
+            <p class="text-btn"><a href="https://github.com/takbok/shared-contacts-admin/blob/master/README.md">README</a> | <a href="http://golang-programming.appspot.com/slides?TYPE=SLIDE&DOC_ID=87&SID=TDSSLIDE-87">SLIDES</a></p>
           </div>
         </div>
         <img src="/images/gapps.png" alt="gapps">

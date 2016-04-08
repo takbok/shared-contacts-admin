@@ -8,6 +8,28 @@ This is a Google App Engine (GAE) application written in Golang that provides a 
 
 https://developers.google.com/admin-sdk/domain-shared-contacts/
 
+What is Domain Shared Contacts API?
+===========
+
+The [Shared Contacts API](https://developers.google.com/admin-sdk/domain-shared-contacts/) allows client applications to retrieve and update external contacts that are shared to all users in a Google Apps domain. Shared contacts are visible to all users of an Apps domain and all Google services have access to the contact list. To retrieve and update Google Apps domain users contact information, use the Directory API instead.
+
+The Domain Shared Contacts API is only available to Google Apps for Business and Education accounts. The contacts sharing is disabled by default and this can be enabled by the Admin of the domain.
+
+**API Features**
+
+http://developers.google.com/admin-sdk/domain-shared-contacts/#Creating
+
+> Creating shared contacts **
+> Retrieving shared contacts  **
+> Retrieving shared contacts using query parameters 
+> Retrieving a single shared contact
+> Retrieving a photo for a contact 
+> Updating shared contacts **
+> Shared contact photo management 
+> Deleting shared contacts Batch operations **
+
+** means SCA is now supporting these functionalities
+
 Build Instructions
 ===========
 
