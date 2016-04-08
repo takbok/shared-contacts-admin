@@ -19,16 +19,16 @@ The Domain Shared Contacts API is only available to Google Apps for Business and
 
 http://developers.google.com/admin-sdk/domain-shared-contacts/#Creating
 
-> Creating shared contacts **
-> Retrieving shared contacts  **
+> [OK] Creating shared contacts
+> [OK] Retrieving shared contacts 
 > Retrieving shared contacts using query parameters 
 > Retrieving a single shared contact
 > Retrieving a photo for a contact 
-> Updating shared contacts **
+> [OK] Updating shared contacts
 > Shared contact photo management 
-> Deleting shared contacts Batch operations **
+> [OK] Deleting shared contacts Batch operations
 
-** means SCA is now supporting these functionalities
+** [OK] means SCA is now supporting these functionalities
 
 Build Instructions
 ===========
