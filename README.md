@@ -3,7 +3,6 @@ A web based application for administering Google Apps Domain Shared Contacts.
 
 * Live Demo: http://g-apps-sca001.appspot.com/
 * Slides: http://goo.gl/SqRpHT
-* Video: TBD
 
 This is a Google App Engine (GAE) application written in Golang that provides a web based user interface for importing, exporting and deleting Google Apps shared contacts. It is based on the Google Domain Shared Contacts API:
 
