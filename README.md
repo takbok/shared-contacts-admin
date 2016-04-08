@@ -1,7 +1,10 @@
-# shared-contacts-admin
-a web based application for administering Google Apps Domain Shared Contacts
+# Shared Contact Admin (SCA)
+A web based application for administering Google Apps Domain Shared Contacts.
 
-This is a GAE application written in golang that provides a web based user interface for the following API:
+Demo: http://g-apps-sca001.appspot.com/
+Slides: http://goo.gl/SqRpHT
+
+This is a Google App Engine (GAE) application written in Golang that provides a web based user interface for importing, exporting and deleting Google Apps shared contacts. It is based on the Google Domain Shared Contacts API:
 
 https://developers.google.com/admin-sdk/domain-shared-contacts/
 
@@ -21,14 +24,100 @@ Prepare
   
   go get google.golang.org/appengine/urlfetch
 
-Dev Serve
+Detailed Steps (Windows Environment)
 ---------
 
-  goapp serve app.yaml
+1. Download installer zip file
+2. Unzip all files under "shared-contacts-admin-master" folder
+3. Take note of the file "oauth.go" which contains authentication details
+* Note that the ClientID and ClientSecret can be configured on https://console.cloud.google.com
+* Since there are multiple settings to be done in Developers Console and Google Apps, they will be covered separately
+* For now, don't change anything yet on the oauth.go, we will try to compile & upload first to appengine
+<pre>
+    var (
+        config = &oauth2.Config{
+            ClientID:     `?????????-??????????.apps.googleusercontent.com`,
+            ClientSecret: `?????????????`,
+            RedirectURL:  `ideally-should-be-set-later`,
+            Scopes:       []string{`http://www.google.com/m8/feeds/contacts/`},
+            Endpoint:     google.Endpoint,
+        }
+    
+        yeah = "yeah"
+    )
+</pre>
 
-Deploy
-------
+4. Create an appengine project on https://console.cloud.google.com
+* Take note of the email address and project ID
+5. Open a command prompt & upload app to appengine
+6. Execute upload and compile command to appengine
+* appcfg.py --application=PROJ_ID --email=EMAIL@EMAIL.COM --no_cookies update shared-contacts-admin-master
+7. After successful upload, try the website URL
+* http://PROJECT-ID.appspot.com
+* The Imports section - This is where you can Import Contacts
+* The Exports Section - This is where you can Export Contacts
+* The Delete Section - This is where you can Delete Contacts
+8. Now you have working URL but it is not yet usable...
+* As expected, there will be errors when you try the SCA as is...
+* What needs to be done so we can make use of this app? 
+1) Setup Google Developer Console 
+2) Setup Google Apps for Work
 
-  goapp deploy app.yaml
+9. Setup Google Developer Console (Part 1)
+* Enable Contacts API
+* The API Credentials - contains Open Auth 2.0 client ID/secret
+* Add the following redirect URIs:
+1) http://g-apps-sca001.appspot.com/contacts/export
+2) http://g-apps-sca001.appspot.com/import/do
+3) http://g-apps-sca001.appspot.com/contacts/exportxml
+4) http://g-apps-sca001.appspot.com/contacts/delete
+* Put the client ID and client secret in the **oauth.go** program
+* Update Consent screen
 
+10. Setup Google Apps
+* Go to Google Apps http://apps.google.com as admin
+* Go to Users to configure contacts sharing
+* Click admin user
+* Click to show Google apps enabled
+* Click to configure contacts
+* Click to go to advanced settings
+* Enable options for Contacts Sharing
 
+11. Setup Google Developer Console (Part 2)
+* Manage Service Accounts
+* Select App Engine service account
+* Enable Google Apps Domain-Wide Delegation
+* Notice that a new client has been created automatically for the service account
+
+12. APIs and Google Apps settings done!
+* Now recompile Go project and upload to appengine
+
+Using the SCA
+---------
+**1. Importing contacts from CSV**
+* Go to the Imports section
+* Point to CSV file and Enter Google Apps Domain
+* Results will show successful imports
+
+**2. Exporting contacts to CSV**
+* Go to Exports Section
+* Enter Google Apps Domain
+* CSV File will be downloaded
+* Open the exported excel file
+
+**3. Exporting contacts to XML**
+* Go to Exports Section
+* Enter Google Apps domain name
+* XML file will be downloaded
+* Open the exported XML file
+
+4. Deleting Contacts
+* Go to the Delete Contacts section
+* Enter Google Apps domain
+* Results will show batch delete request
+
+Viewing the Shared Contacts
+---------
+1. Visit Contacts https://contacts.google.com (as admin)
+* Click on the Directory
+* Contacts are now visible on the domain
