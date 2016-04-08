@@ -60,22 +60,21 @@ Detailed Steps (Windows Environment)
 * The Delete Section - This is where you can Delete Contacts
 8. Now you have working URL but it is not yet usable...
 * As expected, there will be errors when you try the SCA as is...
-* What needs to be done so we can make use of this app? 
-1) Setup Google Developer Console 
-2) Setup Google Apps for Work
-
+* What needs to be done so we can make use of this app? We need to setup Google Developer Console and also we need to setup Google Apps for Work
 9. Setup Google Developer Console (Part 1)
 * Enable Contacts API
 * The API Credentials - contains Open Auth 2.0 client ID/secret
-* Add the following redirect URIs:
-1) http://g-apps-sca001.appspot.com/contacts/export
-2) http://g-apps-sca001.appspot.com/import/do
-3) http://g-apps-sca001.appspot.com/contacts/exportxml
-4) http://g-apps-sca001.appspot.com/contacts/delete
+* Add the following redirect URIs (replace with your project ID):
+<pre>
+http://g-apps-sca001.appspot.com/contacts/export
+http://g-apps-sca001.appspot.com/import/do
+http://g-apps-sca001.appspot.com/contacts/exportxml
+http://g-apps-sca001.appspot.com/contacts/delete
+</pre>
 * Put the client ID and client secret in the **oauth.go** program
 * Update Consent screen
 
-10. Setup Google Apps
+10. Setup Google Apps for Work/Education
 * Go to Google Apps http://apps.google.com as admin
 * Go to Users to configure contacts sharing
 * Click admin user
