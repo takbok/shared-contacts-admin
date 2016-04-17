@@ -4,6 +4,11 @@
 
 ### 17 April 2016
 
+Credit:
+This tutorial is based off the work and slides originally created by
+Edwin Vinas, 
+ULAPPH Corporation
+
 ### Download installer zip file
 
 ![img](2_download_installer_zip.png)
