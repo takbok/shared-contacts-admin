@@ -6,7 +6,7 @@
 
 ### Download installer zip file
 
-![img]("2_download_installer_zip.png")
+![img](2_download_installer_zip.png)
 
 Unzip all files under "shared-contacts-admin-master" folder
 
