@@ -15,13 +15,9 @@ RUN apt-get update && apt-get install -y \
     curl \
     unzip \
     python \
-    git \
  && curl "$GAE_SDK_URL" > /tmp/gaesdk.zip  \
  && unzip /tmp/gaesdk.zip -d /usr/local \
  && curl "$GOLANG" | tar -C /usr/local -xz \
- && go get golang.org/x/oauth2 \
- && go get google.golang.org/appengine \
- && go get google.golang.org/cloud/compute/metadata 
 
 WORKDIR $SCA_SRC
 
