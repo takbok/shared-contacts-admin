@@ -1,5 +1,5 @@
 
-SCA Video Tutorial
+#SCA Video Tutorial
 
 ###Video Tutorial 1 of 4:
 
@@ -32,6 +32,38 @@ Goal:
 [Play Video 2 of 4](http://web29.streamhoster.com/memecentric/sca/shared%20contacts%20admin%20-%20video%20tutorial2.mp4 "SCA Video Tutorial - 2 of 4")
 
 [Download Video 2 of 4](http://wdl29.streamhoster.com/memecentric/sca/shared%20contacts%20admin%20-%20video%20tutorial2.mp4 "SCA Video Tutorial - 2 of 4")
+
+
+###Video Tutorial 3 of 4:
+
+Setup Google Developer Console
+
+Goal:
+- Enable Contacts API
+- Oauth2.0 API Credentials
+- Setup redirect URLs
+- Get the Oauth ID and secret key
+
+[Play Video 3 of 4](http://web29.streamhoster.com/memecentric/sca/shared%20contacts%20admin%20-%20video%20tutorial3.mp4 "SCA Video Tutorial - 3 of 4")
+
+[Download Video 3 of 4](http://wdl29.streamhoster.com/memecentric/sca/shared%20contacts%20admin%20-%20video%20tutorial3.mp4 "SCA Video Tutorial - 3 of 4")
+
+
+###Video Tutorial 4 of 4:
+
+Setup Google Apps for Work
+Goal:
+- Enable options for Contact Sharing
+- Manage Service Accounts
+- Enable Domain-Wide Delegation
+
+Conclusion:
+- Re-install SCA with API credentials and Google Apps already configured
+- Testing SCA for Import, Export, Delete
+
+[Play Video 4 of 4](http://web29.streamhoster.com/memecentric/sca/shared%20contacts%20admin%20-%20video%20tutorial4.mp4 "SCA Video Tutorial - 4 of 4")
+
+[Download Video 4 of 4](http://wdl29.streamhoster.com/memecentric/sca/shared%20contacts%20admin%20-%20video%20tutorial4.mp4 "SCA Video Tutorial - 4 of 4")
 
 
 
