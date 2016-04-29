@@ -1,0 +1,169 @@
+1
+00:00:01,990 --> 00:00:11,690
+Hi Everyone!
+
+2
+00:00:11,690 --> 00:00:23,939
+Welcome to this first video tutorial regarding the Shared Contacts Admin
+It is an Open Source Web-Based Application that runs on Google App Engine
+
+3
+00:00:23,939 --> 00:00:27,550
+And it allows you to maintain your shared contacts on your Google Apps.
+
+4
+00:00:27,550 --> 00:00:43,780
+So basically this part 1 Video Tutorial is going to show you
+the working demo on how to use the SCA to import,export and delete contacts.
+
+5
+00:00:43,780 --> 00:00:49,960
+So basically, we're going to look first on the existing contacts that we have.
+
+6
+00:00:51,170 --> 00:01:02,620
+So basically as you can see here, this is an admin account for a Google Apps for work
+and it has existing contacts in here. So what we're going to do is
+
+7
+00:01:02,620 --> 00:01:11,120
+to use the SCA tool to delete these contacts
+
+8
+00:01:12,250 --> 00:01:20,920
+Basically, the working demo of the Shared Contacts Admin tool 
+has sections like import, delete and export.
+
+9
+00:01:21,729 --> 00:01:24,729
+So what we're going to do is to try first this "Delete Contacts" so that we can
+
+10
+00:01:27,229 --> 00:01:33,590
+refresh the contacts directory. 
+So if you press the delete contacts button, you're going to import the domain name
+
+11
+00:01:34,330 --> 00:01:44,240
+and click "delete contacts".
+So basically here the results show that we have deleted 16 contacts. 
+
+12
+00:01:58,460 --> 00:02:13,520
+So let us refresh this directory.
+
+13
+00:02:14,250 --> 00:02:26,900
+So as you can see here the contacts have been deleted. 
+Now we're going to test how to import the contacts using a csv file
+going to your contacts and in your tray using 
+
+14
+00:02:26,900 --> 00:02:29,900
+the Shared Contacts Admin tool.
+
+15
+00:02:31,280 --> 00:02:50,380
+So what we're going to do is to import the contacts.
+Now, I want to show you an example of a csv file that would contain that. 
+So this is a sample csv file that contains the contacts
+
+16
+00:02:50,380 --> 00:03:00,180
+that you want to update into your Google App
+So this is very useful if you have hundreds of contacts
+
+17
+00:03:00,180 --> 00:03:02,600
+and you want to automatically put them to your Google Apps Directory
+
+18
+00:03:02,600 --> 00:03:08,980
+without doing it manually.
+So using the SCA tool, We're going to click 
+
+19
+00:03:10,660 --> 00:03:26,180
+import contacts point it to the directory while you have
+the sample csv format. 
+
+20
+00:03:26,180 --> 00:03:36,640
+Actually there is a sample csv that comes with the SCA tool.
+So right here we're going to select this file and then put there
+
+21
+00:03:36,640 --> 00:03:39,640
+the domain. And Click import
+
+22
+00:03:49,040 --> 00:04:29,699
+So now the import has been successful so to verify that
+We're going to check back the contacts directory.
+As you can see the contacts have been uploaded	
+
+23
+00:04:29,699 --> 00:04:39,470
+to the contacts directory which is very useful if you are going to share
+hundred of contacts to everyone, 
+
+24
+00:04:39,470 --> 00:04:43,370
+to all users in your domain
+So right now the
+
+25
+00:04:45,060 --> 00:04:51,830
+Delete contacts and the import contacts are now working.
+What we're going to try to do next is to try to export the
+
+26
+00:04:51,830 --> 00:04:59,570
+contacts from Google Apps, going to a csv file or an xml file.
+So what we're going to do is 
+
+27
+00:04:59,570 --> 00:05:00,409
+we're going to
+
+28
+00:05:00,409 --> 00:05:12,849
+export the contacts into a csv file. 
+Just click export, put there the domain name. And then click "Export CSV" 
+
+29
+00:05:15,729 --> 00:05:23,569
+What will happen is it's going to create here a csv file
+That's downloaded in your local directory
+
+30
+00:05:23,569 --> 00:05:39,509
+If you're going to open that in Excel
+it's going to show let's say a format that you have in Excel.
+Or if you want to open it in your text file, it shows us a csv formatted file
+
+31
+00:05:39,509 --> 00:05:47,520
+containing the contacts that has been exported from your Google Apps.
+So there we go 
+
+32
+00:05:47,520 --> 00:06:02,860
+We were able to demonstrate that the Shared Contacts Admin, SCA Tool has been able to
+successfully import, export and delete contacts.
+
+33
+00:06:02,860 --> 00:06:16,779
+So if you want to check out this is the github repository and
+this is the demo that we were able to try out a while ago.
+So watch out for the  other video tutorials
+
+34
+00:06:16,779 --> 00:06:28,399
+regarding the other portions like How to Install it in App engine, 
+how to setup the authentication system and so on.
+
+35
+00:06:28,399 --> 00:06:28,810
+So thank you very much for watching this video. 
+

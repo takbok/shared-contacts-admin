@@ -1,0 +1,143 @@
+1
+00:00:00,000 --> 00:00:17,470
+Hi everyone! Welcome to this third video tutorial regarding the 
+Shared Contacts Admin tool or SCA which is an open-source, web-based solution that allows
+you to manage your shared contacts from Google apps. In the previous two videos
+
+
+2
+00:00:17,470 --> 00:00:24,689
+we were able to show the working demo of the SCA. 
+and the next video, we're able to download and install the SCA in an app engine.
+
+
+3
+00:00:24,689 --> 00:00:35,790
+And now, what we're going to show you is How to setup the 
+Google developer console in order to
+
+4
+00:00:35,790 --> 00:00:44,930
+enable the APIs and the authentication. But before we proceed
+let me just show you the snippet of the code that we have for the SCA
+
+5
+00:00:44,930 --> 00:00:56,520
+And that because it's related to the one that we're going to configure in the developer console.
+As you can see in this file,the oauth.co file, you will see here
+
+6
+00:00:56,520 --> 00:01:16,189
+the configuration the we need to fill up. Once you were able to configure the
+APIs in the developer console. So basically you are going to need the Client ID and the Client Secret
+So that before we re-install the SCA you are going to modify this file. Also I want to show you 
+
+7
+00:01:16,189 --> 00:01:19,680
+that there will be a lot of Redirects that we need to
+
+8
+00:01:21,830 --> 00:01:38,670
+put in the configuration in the developer console. So these are required because
+open Authentication requires us to indicate what are the valid domain and the redirect
+URLs that we'll be able to cover. So let us 
+
+9
+00:01:38,670 --> 00:01:47,140
+proceed to the developer console in order to enable
+the contact's API to setup the authentication and the redirect URL
+
+10
+00:01:49,190 --> 00:02:23,030
+so in the Google Developer console, go to API
+and then, click on contact's API. And then we're going to enable that.
+And now that's enabled, we need to go to credentials.
+
+11
+00:02:23,030 --> 00:02:23,730
+We're going to setup
+
+12
+00:02:23,730 --> 00:02:32,250
+open authentication "oauth" client ID. And this is for
+
+13
+00:02:32,250 --> 00:02:37,520
+a web operation. But before that we need to configure the
+
+14
+00:02:37,520 --> 00:02:48,570
+consent screen, that is basically the page
+that user sees when it is being prompted in the open authentication. 
+So basically let's try to 
+
+15
+00:02:48,570 --> 00:03:44,010
+name that Shared Contacts Admin. Let's leave the optional parameters as these.
+Since I was not able to configure the consent screen. So basically this is where
+the Shared Contacts Admin.
+
+16
+00:03:53,260 --> 00:03:56,260
+These are optional parameters. We're going to save it 
+
+17
+00:04:10,430 --> 00:04:27,169
+We're going to create a Web Application Client ID. Let's create
+oauth.co. And in here we're going to setup the redirect URLs. So
+
+18
+00:04:27,169 --> 00:04:30,169
+just copy the one that we have on our list.
+
+19
+00:05:26,529 --> 00:05:29,769
+So now we have the Client ID and the Client Secret. 
+So in your case you have to
+
+20
+00:05:29,769 --> 00:05:40,009
+take note of this and this is the one that we're going to input
+in the oauth.co file before we install the SCA again. We don't need to 
+
+21
+00:05:40,009 --> 00:05:52,689
+download the adjacent file.
+So the next thing we need to do is to input the Client ID and the Secret key and the
+
+22
+00:05:52,689 --> 00:06:03,969
+oauth file. So let's go to... I'll just use this command to direct.
+
+23
+00:06:41,180 --> 00:07:47,639
+I'll just get the Client ID. And then I'm going to replace the Client Secret
+And then I'm going to save it. And let's go back to credentials again. We need to
+create an API key for the browser
+
+24
+00:07:47,639 --> 00:08:02,310
+We're going to check the Slide tutorial that I have created a while ago
+so that we don't mix our find. So basically this slide shows us the step by step process.
+
+25
+00:08:02,310 --> 00:08:09,659
+So now we have enabled the contacts API. And we're going to create a server key.
+
+26
+00:08:28,729 --> 00:08:58,550
+And then next, we're going to setup now the Google apps. 
+Hopefully we're done with the developer console. Now we're going to 
+go to the Google Apps in order to enable the contacts sharing
+
+
+27   
+00:09:44,540 --> 00:09:54,590
+Okay so, I think I'm just going to record a new video on how to 
+configure the Google apps because I'm reaching the limit now of this video.
+So thank you for
+
+28
+00:09:54,590 --> 00:09:57,090
+watching this video. Watch out for the next on configuring Google Apps
+

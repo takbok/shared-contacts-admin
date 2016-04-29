@@ -1,0 +1,120 @@
+1
+00:00:00,000 --> 00:00:11,410
+Hi Everyone! Welcome to the second video tutorial regarding the Shared Contacts Admin. 
+In the second video, we are going to show you how you will install SCA
+
+2
+00:00:11,410 --> 00:00:31,949
+on the App Engine.This will not cover the setup of the API and the Google Apps
+Coz' we're going to cover that on our next video. 
+So the first step is we're going to get the repository from Github. Here's the URL for the repository. 
+
+3
+00:00:31,949 --> 00:00:34,949
+And we're going to use the Github Shell and you can also use the command prompt.
+
+4
+00:00:55,740 --> 00:01:28,340
+So I'm going to create a new folder for a demo. And I'm going to download here the...
+
+5
+00:01:28,340 --> 00:02:43,420
+So while waiting for the files to be downloaded, we're going to go to the developer console
+and we're going to create a new app engine ID... and then I'm going to set up the permission.
+
+6
+00:02:55,400 --> 00:03:19,549
+Okay, so my username cannot be used to install two app engine.I'm using another admin account.
+This time it's going to deligate in this e-mail address to be able to install an application
+
+7
+00:03:19,549 --> 00:03:53,409
+to this app engine. And I'm just going to check the... email and now I'm going to approve the indication
+to be able to become an admin. In your case you may not need to
+
+8
+00:03:53,409 --> 00:04:07,419
+do this if you are able to install or use your email address to install the Google App engine.
+I think, in my case, I'm not able to use the other email address 
+
+9
+00:04:07,419 --> 00:04:11,310
+because that one was secured.
+
+10
+00:04:13,010 --> 00:04:24,479
+Lead you to the two step now of the authentication process. So let's wait for the indication.
+Should be accepted
+
+11
+00:04:32,669 --> 00:04:34,689
+accept invitation.
+
+12
+00:04:34,689 --> 00:05:01,099
+So now that the invitation has been accepted, let's just close this window. 
+Now that the invitation has been accepted, let's try to install now the SCA
+
+13
+00:05:04,729 --> 00:05:25,589
+to the app engine admin I created. So we have created G-apps,sca-0006
+and then we're going to use the other admin account
+
+14
+00:05:25,589 --> 00:05:55,270
+This, I'm going to clear the Vendor folder because a while ago I've got an error on that
+And I'm also going to clear the tutorial because I also got an error next to that but not critical. 
+Partly I was able to close my gitbash. So let us open now the gitbash app.
+
+15
+00:06:03,889 --> 00:06:06,889
+If you don't have a gitbash, you can use your command prompt.
+
+16
+00:06:52,689 --> 00:07:01,559
+So now the application is being deployed to the project ID 
+that we have just created a while ago. So it has been completed successfully
+
+17
+00:07:01,559 --> 00:07:06,069
+And right now what we're going to do is to try to access it.
+
+18
+00:07:06,069 --> 00:07:22,399
+So basically our new project ID is this one and we can try to access the
+web-based interface of the SCA. So there you go, you have now 
+
+19
+00:07:22,399 --> 00:07:23,249
+installed the 
+
+20
+00:07:23,249 --> 00:07:37,309
+web-based interface of the SCA it has a function to import contacts, to export contacts
+and then to delete contacts. And that's all we have to do in this video tutorial.
+
+21
+00:07:37,309 --> 00:07:47,089
+We're going to cover the next part which allows us
+to configure the Google Developer Console in
+
+22
+00:07:47,089 --> 00:07:53,919
+order to set up the APIs said and the credentials
+especially the open authentication and then we're going to
+
+23
+00:07:53,919 --> 00:08:10,110
+the redirect URLs and more on signing up the security
+and be able to communicate with the Google APIs. Okay, so this project ID and this is just the UI
+
+24
+00:08:10,110 --> 00:08:18,800
+for the SCA. We need to setup the credentials
+in order for this SCA application to be able to communicate with
+
+25
+00:08:18,800 --> 00:08:23,409
+Google Apps and the Google API so thank you for
+watching this video.
+

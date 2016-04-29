@@ -1,0 +1,192 @@
+1
+00:00:00,000 --> 00:00:16,349
+Hi Everyone! Welcome to this 4th video tutorial regarding the Shared Contacts Admin.
+This is an open-source, web-based application that allows us to manage our contacts
+especially our shared contacts from Google Apps
+
+2
+00:00:17,560 --> 00:00:26,930
+So the goal of this video is for us to be able
+to setup Google apps for work or education
+
+3
+00:00:27,730 --> 00:00:42,980
+And we're going to enable contacts sharing and 
+we're going back to the developer console in order to manage other configurations
+like the service account
+
+4
+00:00:42,980 --> 00:01:16,830
+So first let's go to Google Apps for work. And I'm going to show you here
+how to enable the Contacts Sharing. So I have here an admin account. And I'm going to
+Google Apps enable section, and then I'm going to go the contacts and on the sharing settings.
+
+5
+00:01:16,830 --> 00:01:19,830
+I need to make sure that 
+
+6
+00:01:24,400 --> 00:01:37,570
+the contacts sharing is enabled and show all e-mail addresses
+and then show both domain profiles and all my shared contacts
+
+7
+00:01:37,570 --> 00:01:42,310
+and domain in public data. So this will be published in our external directory.
+
+8
+00:01:48,200 --> 00:01:49,990
+So now that's done
+
+9
+00:01:49,990 --> 00:02:06,080
+we're going to
+
+10
+00:02:06,080 --> 00:02:15,410
+the developer console in order to setup the service account
+so create credentials for a service account
+
+11
+00:02:23,950 --> 00:02:46,500
+and this will be for the app engine and default service account.
+And then click on manage service account
+
+12
+00:02:53,090 --> 00:03:07,500
+And then on the app engine default service account, edit that.
+And then we're going to click on enable Google Apps domain white callibration
+
+13
+00:03:20,810 --> 00:03:29,489
+Let's go to the API manager home, and then the credentials
+
+14
+00:03:34,630 --> 00:03:40,980
+you will notice here that the when we enable the domain white callibration
+the system automatically 
+
+15
+00:03:40,980 --> 00:03:44,020
+added this client for G-apps' SCA 006
+
+
+16
+00:03:47,810 --> 00:03:56,460
+So that's it, we are done with configuring the Google Apps
+I think what we can do next is now we're going to re-install the
+
+17
+00:03:56,460 --> 00:03:59,460
+SCA application. 
+
+18
+00:04:31,129 --> 00:04:39,129
+Let's review that directory... I'd like to execute that
+
+19
+00:04:54,120 --> 00:05:05,150
+So now the SCA application is being uploaded
+Let's go to the app engine. Basically we are doing this
+
+20
+00:05:05,150 --> 00:05:15,250
+because a while ago we set up the oauth.go
+where we enter the client ID and the Client Secret for our application
+
+21
+00:05:15,250 --> 00:05:31,210
+So now that's completed, we're going 
+to visit now the website
+
+22
+00:05:31,210 --> 00:05:46,229
+the URL for our SCA is this one
+So still, we are able to see the web-UI. I think what we can do right
+
+23
+00:05:46,229 --> 00:05:54,410
+here is to be able to execute a function
+like the import function
+
+24
+00:05:54,410 --> 00:06:05,960
+So let's try to execute this one on the test data folder
+we can use the sample one. If all our configurations were correct
+
+25
+00:06:05,960 --> 00:06:10,960
+we should be able to execute the import function
+
+26
+00:06:15,870 --> 00:06:23,360
+Okay so now it's being prompted. We need to enter the accounts we used. 
+And initially you will be prompted
+
+27
+00:06:23,360 --> 00:06:34,210
+with this open authentication, which warns you about the permission
+needed by the project ID that we have created. So just allow it
+
+28
+00:06:37,650 --> 00:06:45,240
+So perfect! We were able to import the records to the Google Apps
+Now what we're going to do is to 
+
+29
+00:06:45,240 --> 00:07:08,800
+use the other functions like, we're going to export contacts to CSV
+Okay so we were able to export the contacts
+
+30
+00:07:08,800 --> 00:07:21,650
+So you saw the downloaded CSV file. Now let's try
+Delete contacts. Before that, let's try to
+
+31
+00:07:21,650 --> 00:07:47,630
+visit the contacts directory, in order to validate that we were
+able to import the contacts successfully. So I'm going to use my 
+admin account for the Google Apps
+
+32
+00:07:57,840 --> 00:08:11,940
+And on the directory, I am able to see tha contacts that we 
+have there. So on the next step that we're going to do, we're going to
+
+33
+00:08:11,940 --> 00:08:27,460
+execute a delete, all those contacts should be deleted.
+okay so it says here
+
+34
+00:08:27,460 --> 00:08:47,470
+records were deleted. So let me just confirm that.
+We're reloading this view in the contacts directory
+
+35
+00:08:47,470 --> 00:09:00,500
+So there you go, all the external contents have been deleted
+by our Shared Contacts Admin tool. So there you go, we have been able to 
+
+36
+00:09:00,500 --> 00:09:07,110
+successfully configure and install our Shared Contacts Admin tool.
+So for everyone who are interested 
+
+37
+00:09:07,110 --> 00:09:15,880
+to install this on your domain or on your business
+just go to our github and follow the slides
+
+38
+00:09:15,880 --> 00:09:28,370
+and the tutorials and this video that we have created for you
+and feel free to send us your issues or your questions. So that I will be 
+able to help you in setting up this very good tool
+
+39
+00:09:28,370 --> 00:09:35,940
+which is a free tool that will be able to manage your Google App shared contacts.
+Thank you very much for watching!
+
