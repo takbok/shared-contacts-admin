@@ -1,11 +1,11 @@
 
 #SCA Video Tutorial
 
-For to view the video tutorial on Youtube visit:
+To view the video tutorial on Youtube visit:
 
 - https://www.youtube.com/c/takbok
 
-otherwise, see below for the same, identical video tutorial:
+otherwise, see below for the same, identical video tutorial.
 
 ###Video Tutorial 1 of 4:
 
