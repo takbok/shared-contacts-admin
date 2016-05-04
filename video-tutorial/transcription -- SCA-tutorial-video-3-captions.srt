@@ -100,7 +100,7 @@ in the oauth.go file before we install the SCA again. We don't need to
 
 21
 00:05:40,009 --> 00:05:52,689
-download the adjacent file.
+download the JSON.
 So the next thing we need to do is to input the Client ID and the Secret key and the
 
 22
