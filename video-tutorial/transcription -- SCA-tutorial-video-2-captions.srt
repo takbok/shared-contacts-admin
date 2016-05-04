@@ -7,7 +7,7 @@ In the second video, we are going to show you how you will install SCA
 00:00:11,410 --> 00:00:31,949
 on the App Engine.This will not cover the setup of the API and the Google Apps
 Coz' we're going to cover that on our next video. 
-So the first step is we're going to get the repository from Github. Here's the URL for the repository. 
+So the first step is we're going to get the repository from Github. Here's the URL for the repository.
 
 3
 00:00:31,949 --> 00:00:34,949
@@ -35,7 +35,7 @@ to be able to become an admin. In your case you may not need to
 8
 00:03:53,409 --> 00:04:07,419
 do this if you are able to install or use your email address to install the Google App engine.
-I think, in my case, I'm not able to use the other email address 
+I think, in my case, I'm not able to use the other email address
 
 9
 00:04:07,419 --> 00:04:11,310
@@ -57,7 +57,7 @@ Now that the invitation has been accepted, let's try to install now the SCA
 
 13
 00:05:04,729 --> 00:05:25,589
-to the app engine admin I created. So we have created G-apps,sca-0006
+to the app engine admin I created. So we have created G-apps-sca-0006
 and then we're going to use the other admin account
 
 14
@@ -82,11 +82,11 @@ And right now what we're going to do is to try to access it.
 18
 00:07:06,069 --> 00:07:22,399
 So basically our new project ID is this one and we can try to access the
-web-based interface of the SCA. So there you go, you have now 
+web-based interface of the SCA. So there you go, you have now
 
 19
 00:07:22,399 --> 00:07:23,249
-installed the 
+installed the
 
 20
 00:07:23,249 --> 00:07:37,309
@@ -117,4 +117,3 @@ in order for this SCA application to be able to communicate with
 00:08:18,800 --> 00:08:23,409
 Google Apps and the Google API so thank you for
 watching this video.
-
