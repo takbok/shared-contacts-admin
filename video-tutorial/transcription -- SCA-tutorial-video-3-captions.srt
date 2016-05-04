@@ -4,12 +4,10 @@ Hi everyone! Welcome to this third video tutorial regarding the
 Shared Contacts Admin tool or SCA which is an open-source, web-based solution that allows
 you to manage your shared contacts from Google apps. In the previous two videos
 
-
 2
 00:00:17,470 --> 00:00:24,689
 we were able to show the working demo of the SCA. 
 and the next video, we're able to download and install the SCA in an app engine.
-
 
 3
 00:00:24,689 --> 00:00:35,790
@@ -24,13 +22,13 @@ let me just show you the snippet of the code that we have for the SCA
 5
 00:00:44,930 --> 00:00:56,520
 And that because it's related to the one that we're going to configure in the developer console.
-As you can see in this file,the oauth.co file, you will see here
+As you can see in this file,the oauth.go file, you will see here
 
 6
 00:00:56,520 --> 00:01:16,189
 the configuration the we need to fill up. Once you were able to configure the
 APIs in the developer console. So basically you are going to need the Client ID and the Client Secret
-So that before we re-install the SCA you are going to modify this file. Also I want to show you 
+So that before we re-install the SCA you are going to modify this file. Also I want to show you
 
 7
 00:01:16,189 --> 00:01:19,680
@@ -40,7 +38,7 @@ that there will be a lot of Redirects that we need to
 00:01:21,830 --> 00:01:38,670
 put in the configuration in the developer console. So these are required because
 open Authentication requires us to indicate what are the valid domain and the redirect
-URLs that we'll be able to cover. So let us 
+URLs that we'll be able to cover. So let us
 
 9
 00:01:38,670 --> 00:01:47,140
@@ -69,7 +67,7 @@ a web operation. But before that we need to configure the
 00:02:37,520 --> 00:02:48,570
 consent screen, that is basically the page
 that user sees when it is being prompted in the open authentication. 
-So basically let's try to 
+So basically let's try to
 
 15
 00:02:48,570 --> 00:03:44,010
@@ -79,12 +77,12 @@ the Shared Contacts Admin.
 
 16
 00:03:53,260 --> 00:03:56,260
-These are optional parameters. We're going to save it 
+These are optional parameters. We're going to save it
 
 17
 00:04:10,430 --> 00:04:27,169
 We're going to create a Web Application Client ID. Let's create
-oauth.co. And in here we're going to setup the redirect URLs. So
+oauth.go. And in here we're going to setup the redirect URLs. So
 
 18
 00:04:27,169 --> 00:04:30,169
@@ -98,7 +96,7 @@ So in your case you have to
 20
 00:05:29,769 --> 00:05:40,009
 take note of this and this is the one that we're going to input
-in the oauth.co file before we install the SCA again. We don't need to 
+in the oauth.go file before we install the SCA again. We don't need to
 
 21
 00:05:40,009 --> 00:05:52,689
@@ -130,8 +128,7 @@ And then next, we're going to setup now the Google apps.
 Hopefully we're done with the developer console. Now we're going to 
 go to the Google Apps in order to enable the contacts sharing
 
-
-27   
+27
 00:09:44,540 --> 00:09:54,590
 Okay so, I think I'm just going to record a new video on how to 
 configure the Google apps because I'm reaching the limit now of this video.
@@ -140,4 +137,3 @@ So thank you for
 28
 00:09:54,590 --> 00:09:57,090
 watching this video. Watch out for the next on configuring Google Apps
-
