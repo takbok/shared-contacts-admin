@@ -23,7 +23,7 @@ Google Apps enable section, and then I'm going to go the contacts and on the sha
 
 5
 00:01:16,830 --> 00:01:19,830
-I need to make sure that 
+I need to make sure that
 
 6
 00:01:24,400 --> 00:01:37,570
@@ -55,7 +55,7 @@ And then click on manage service account
 12
 00:02:53,090 --> 00:03:07,500
 And then on the app engine default service account, edit that.
-And then we're going to click on enable Google Apps domain white callibration
+And then we're going to click on enable Google Apps domain-wide delegation.
 
 13
 00:03:20,810 --> 00:03:29,489
@@ -63,13 +63,12 @@ Let's go to the API manager home, and then the credentials
 
 14
 00:03:34,630 --> 00:03:40,980
-you will notice here that the when we enable the domain white callibration
-the system automatically 
+you will notice here that the when we enable the  domain-wide delegation,
+the system automatically
 
 15
 00:03:40,980 --> 00:03:44,020
-added this client for G-apps' SCA 006
-
+added this client for G-apps-SCA 006
 
 16
 00:03:47,810 --> 00:03:56,460
@@ -78,7 +77,7 @@ I think what we can do next is now we're going to re-install the
 
 17
 00:03:56,460 --> 00:03:59,460
-SCA application. 
+SCA application.
 
 18
 00:04:31,129 --> 00:04:39,129
@@ -131,7 +130,7 @@ needed by the project ID that we have created. So just allow it
 28
 00:06:37,650 --> 00:06:45,240
 So perfect! We were able to import the records to the Google Apps
-Now what we're going to do is to 
+Now what we're going to do is to
 
 29
 00:06:45,240 --> 00:07:08,800
@@ -167,12 +166,12 @@ We're reloading this view in the contacts directory
 35
 00:08:47,470 --> 00:09:00,500
 So there you go, all the external contents have been deleted
-by our Shared Contacts Admin tool. So there you go, we have been able to 
+by our Shared Contacts Admin tool. So there you go, we have been able to
 
 36
 00:09:00,500 --> 00:09:07,110
 successfully configure and install our Shared Contacts Admin tool.
-So for everyone who are interested 
+So for everyone who are interested
 
 37
 00:09:07,110 --> 00:09:15,880
