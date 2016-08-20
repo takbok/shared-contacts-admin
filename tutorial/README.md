@@ -2,7 +2,8 @@
 
 ### Manual on how to install SCA on GAE with google apps
 
-### 17 April 2016
+### Originally published 17 April 2016
+Updated 20 August 2016
 
 Credit:
 This tutorial is based off the work and slides originally created by
