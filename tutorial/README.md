@@ -11,6 +11,10 @@ ULAPPH Corporation
 
 ### Download installer zip file
 
+From:
+https://github.com/takbok/shared-contacts-admin
+click the green "Clone or download" button followed by "Download ZIP".  Then Unzip the downloaded ZIP file.
+
 ![img](2_download_installer_zip.png)
 
 Unzip all files under "shared-contacts-admin-master" folder
@@ -39,6 +43,22 @@ Unzip all files under "shared-contacts-admin-master" folder
 ![img](4_create_an_appengine_project.png)
 
 Take note of the email address and project ID
+
+### Remove unneeded folders & download required golang packages
+
+After un-zipping the ZIP delete the following three folders:
+
+* tutorial
+* video-tutorial
+* vendor
+
+See Issue # 9 for background on the reason for deleting the "vendor" folder.  https://github.com/takbok/shared-contacts-admin/issues/9
+
+Because the "vendor" folder has been removed, some needed golang packages must now down be downloaded.  If using Microsoft Windows, run
+
+* "install-packages.bat"
+
+to install the required golang packages.
 
 ### Open a command prompt & upload app to appengine
 
