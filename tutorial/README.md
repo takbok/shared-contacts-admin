@@ -55,9 +55,10 @@ After un-zipping the ZIP delete the following three folders:
 
 See Issue # 9 for background on the reason for deleting the "vendor" folder.  https://github.com/takbok/shared-contacts-admin/issues/9
 
-Because the "vendor" folder has been removed, some needed golang packages must now down be downloaded.  If using Microsoft Windows, run
+Because the "vendor" folder has been removed, some needed golang packages must now down be downloaded.  If using Microsoft Windows, follow these steps:
 
-* "install-packages.bat"
+* Ensure the git command is installed on your computer.  If needed, you may install from: https://git-scm.com/download/win
+* Run "install-packages.bat"
 
 to install the required golang packages.
 
