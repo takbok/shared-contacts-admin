@@ -2,11 +2,12 @@
 
 if [ "$GOPATH" == "" ]; then
 	echo "GOPATH Environment variable not defined."
+	exit
 else
 	echo "GOPATH = $GOPATH"
 fi
 
-echo "Installing SCA packages"
+echo "Performing package update\installation. Please wait...."
 
 echo "Installing\Updating 'google.golang.org/appengine'"
 go get google.golang.org/appengine
