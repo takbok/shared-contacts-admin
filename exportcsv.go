@@ -116,13 +116,7 @@ func getProperDomainNameFromUrl(u string) (string, error) {
 		return ``, fmt.Errorf("The URL seems to be invalid")
 	}
 
-	p := strings.Split(uri.Host, ".")
+	p := strings.TrimPrefix(uri.Host, "www.")
 
-	if len(p) < 2 {
-		return ``, fmt.Errorf("The URL seems to be invalid")
-	}
-
-	p = p[len(p)-2 : len(p)]
-
-	return strings.Join(p, "."), nil
+	return p, nil
 }
