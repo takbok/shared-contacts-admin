@@ -78,12 +78,12 @@ var htmlBody1 = template.Must(template.New("User").Parse(`<!DOCTYPE html>
   <meta name="viewport" content="initial-scale=1, width=device-width, maximum-scale=1, minimum-scale=1, user-scalable=no">
   <meta name="author" content="Takbok">
   <link rel="shortcut icon" id="favicon" href="favicon.png">
-  <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
-  <link href='http://fonts.googleapis.com/css?family=Pacifico:400' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Pacifico:400' rel='stylesheet' type='text/css'>
   <link href='/css/onepage-scroll.css' rel='stylesheet' type='text/css'>
   <link href='/css/onepage-scroll-demo.css' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" media="screen,projection,tv" href="/css/modalWindow.css" />
-  <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.0.js"></script>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.0.js"></script>
   <script type="text/javascript" src="/js/jquery.onepage-scroll.js"></script>
   <script>
     $(document).ready(function(){
