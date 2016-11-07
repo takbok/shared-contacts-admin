@@ -17,6 +17,7 @@ Import External Contacts from CSV
 ![Import Results](https://raw.githubusercontent.com/takbok/shared-contacts-admin/master/testcases/images/Screenshot-Request%20for%20Permission%20Shared%20Contacts.png)
 
 9. The output of web app should be:
+```
 Result: 201 Created
 Result: 201 Created
 Result: 201 Created
@@ -33,6 +34,7 @@ Result: 201 Created
 Result: 201 Created
 Result: 201 Created
 Result: 201 Created
+```
 (status 201 for each processed row).
 
 10. With the same Google Account, visit [Google Contacts](https://www.google.com/contacts/?hl=en#contacts) and click Directory.
