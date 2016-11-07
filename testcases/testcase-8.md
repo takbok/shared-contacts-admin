@@ -37,9 +37,9 @@ Result: 201 Created
 ```
 (status 201 for each processed row).
 
-10. With the same Google Account, visit [Google Contacts](https://www.google.com/contacts/?hl=en#contacts) and click Directory.
-11. Click at the contact you edited in CSV, e.g. testmail46@test.com
-12. Birthday field is blank - set it to some other date in relation to #2.
+* With the same Google Account, visit [Google Contacts](https://www.google.com/contacts/?hl=en#contacts) and click Directory.
+* Click at the contact you edited in CSV, e.g. testmail46@test.com
+* Birthday field is blank - set it to some other date in relation to #2.
 
 Export changed records to CSV
 -----
